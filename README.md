@@ -6,7 +6,6 @@ Flappy bird with extra features for the Gameboy Advance
 
 ``` 
 make
-./flappygba
 ```
 
 If an error occurs that looks like `flappygba is already up to date` then do `make -B`
