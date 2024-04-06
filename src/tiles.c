@@ -4,11 +4,11 @@
  */
 
 /* include the image we are using */
-#include "background.h"
+#include "../assets/background.h"
 
 /* include the tile maps we are using for back and fore ground */
-#include "map.h"
-#include "map2.h"
+#include "../assets/map.h"
+#include "../assets/map2.h"
 
 /* the width and height of the screen */
 #define WIDTH 240
@@ -168,30 +168,25 @@ int main() {
     /* set initial scroll to 0 */
     int xscroll = 0;
     int yscroll = 0;
-
+    //Counter. Counts the amount of ticks we have gone along.
+    int counter = 0;
     /* loop forever */
     while (1) {
-        /* scroll with the arrow keys */
-        if (button_pressed(BUTTON_DOWN)) {
-            yscroll++;
-        }
-        if (button_pressed(BUTTON_UP)) {
-            yscroll--;
+        //Increment counter.
+        counter = counter+1;
 
-        }
-        if (button_pressed(BUTTON_RIGHT)) {
+        //Checks if the counter is divisable by 10. If it is, moves the screen. I ued 10 to slow it down to look more natural.
+
+        if (counter%10==0){
             xscroll++;
-        }
-        if (button_pressed(BUTTON_LEFT)) {
-            xscroll--;
         }
 
         /* wait for vblank before scrolling */
         wait_vblank();
         *bg0_x_scroll = xscroll;
-        *bg0_y_scroll = yscroll;
+        //*bg0_y_scroll = yscroll;
         *bg1_x_scroll = xscroll*2;
-        *bg1_y_scroll = yscroll*2;
+        //*bg1_y_scroll = yscroll*2;
 
         /* delay some */
         delay(50);
