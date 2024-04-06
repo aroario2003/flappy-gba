@@ -4,11 +4,11 @@
  */
 
 /* include the image we are using */
-#include "../assets/background.h"
+#include "../include/background.h"
 
 /* include the tile maps we are using for back and fore ground */
-#include "../assets/map.h"
-#include "../assets/map2.h"
+#include "../include/map.h"
+#include "../include/map2.h"
 
 /* the width and height of the screen */
 #define WIDTH 240
