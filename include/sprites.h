@@ -11,7 +11,7 @@ typedef struct {
 } Sprite;
 
 /* array of all the sprites available on the GBA */
-struct Sprite sprites[NUM_SPRITES];
+Sprite sprites[NUM_SPRITES];
 int next_sprite_index = 0;
 
 typedef enum {
@@ -28,5 +28,16 @@ typedef enum {
     SIZE_16_32,
     SIZE_32_64
 } SpriteSize;
+
+volatile unsigned short* sprite_attribute_memory = (volatile unsigned short*) 0x7000000;
+volatile unsigned short* sprite_image_memory = (volatile unsigned short*) 0x6010000;
+
+Sprite* sprite_init(int x, int y, SpriteSize size, int horizontal_flip, int vertical_flip, int tile_index, int priority);
+void sprite_position(Sprite* sprite, int x, int y);
+void sprite_move(Sprite* sprte, int dx, in dy);
+void sprite_set_vertical_flip(Sprite* sprite, int vertical_flip);
+void sprite_set_horizontal_flip(Sprite* sprite, int horizontal_flip);
+void sprite_set_offset(Sprite* sprite, int offset);
+void sprite_update_all();
 
 #endif

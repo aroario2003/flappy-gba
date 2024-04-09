@@ -1,7 +1,7 @@
+#include "lib.h"
 #include "sprites.h"
-struct Sprite;
 /* function to initialize a sprite with its properties, and return a pointer */
-Sprite* sprite_init(int x, int y, enum SpriteSize size,
+Sprite* sprite_init(int x, int y, SpriteSize size,
         int horizontal_flip, int vertical_flip, int tile_index, int priority) {
 
     /* grab the next index */
@@ -52,7 +52,7 @@ Sprite* sprite_init(int x, int y, enum SpriteSize size,
 }
 
 /* set a sprite position */
-void sprite_position(struct Sprite* sprite, int x, int y) {
+void sprite_position(Sprite* sprite, int x, int y) {
     /* clear out the y coordinate */
     sprite->attribute0 &= 0xff00;
 
@@ -67,7 +67,7 @@ void sprite_position(struct Sprite* sprite, int x, int y) {
 }
 
 /* move a sprite in a direction */
-void sprite_move(struct Sprite* sprite, int dx, int dy) {
+void sprite_move(Sprite* sprite, int dx, int dy) {
     /* get the current y coordinate */
     int y = sprite->attribute0 & 0xff;
 
@@ -79,7 +79,7 @@ void sprite_move(struct Sprite* sprite, int dx, int dy) {
 }
 
 /* change the vertical flip flag */
-void sprite_set_vertical_flip(struct Sprite* sprite, int vertical_flip) {
+void sprite_set_vertical_flip(Sprite* sprite, int vertical_flip) {
     if (vertical_flip) {
         /* set the bit */
         sprite->attribute1 |= 0x2000;
@@ -90,7 +90,7 @@ void sprite_set_vertical_flip(struct Sprite* sprite, int vertical_flip) {
 }
 
 /* change the vertical flip flag */
-void sprite_set_horizontal_flip(struct Sprite* sprite, int horizontal_flip) {
+void sprite_set_horizontal_flip(Sprite* sprite, int horizontal_flip) {
     if (horizontal_flip) {
         /* set the bit */
         sprite->attribute1 |= 0x1000;
@@ -101,7 +101,7 @@ void sprite_set_horizontal_flip(struct Sprite* sprite, int horizontal_flip) {
 }
 
 /* change the tile offset of a sprite */
-void sprite_set_offset(struct Sprite* sprite, int offset) {
+void sprite_set_offset(Sprite* sprite, int offset) {
     /* clear the old offset */
     sprite->attribute2 &= 0xfc00;
 

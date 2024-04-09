@@ -1,11 +1,9 @@
-    //Included 'sprite.c' as it could not access sprite commands called -M
-#include "../src/sprite.c"
+#include "sprites.h"
 #include "bird.h"
-struct Bird;
-/* initialize the bird */
+#include "game.h"
 
-    //Changed 'Bird*' to 'Bird" due to deref issues with every single variable within -M
-void bird_init(struct Bird bird) {
+/* initialize the bird */
+void bird_init(Bird* bird) {
     // TODO: add and remove fields that are neccessary or unnecessary
     bird->x = 100;
     bird->y = 113;
@@ -18,9 +16,7 @@ void bird_init(struct Bird bird) {
 }
 
 // TODO: change to go up
-    //Changed 'Bird*' to 'Bird" due to deref issues with every single variable     within -M
-
-int bird_right(struct Bird bird) {
+int bird_right(Bird* bird) {
     /* face right */
     sprite_set_horizontal_flip(bird->sprite, 0);
     bird->move = 1;
@@ -36,9 +32,7 @@ int bird_right(struct Bird bird) {
 }
 
 // maybe unnecessary
-    //Changed 'Bird*' to 'Bird" due to deref issues with every single variable     within -M
-
-void bird_stop(struct Bird bird) {
+void bird_stop(Bird* bird) {
     bird->move = 0;
     bird->frame = 0;
     bird->counter = 7;
@@ -46,9 +40,7 @@ void bird_stop(struct Bird bird) {
 }
 
 /* update the bird */
-    //Changed 'Bird*' to 'Bird" due to deref issues with every single variable     within -M
-
-void bird_update(struct Bird bird) {
+void bird_update(Bird* bird) {
     if (bird->move) {
         bird->counter++;
         if (bird->counter >= bird->animation_delay) {
