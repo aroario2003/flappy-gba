@@ -1,6 +1,8 @@
 #ifndef SPRITES_H
 #define SPRITES_H
 
+#define NUM_SPRITES 128
+
 typedef struct {
     unsigned short attribute0;
     unsigned short attribute1;
