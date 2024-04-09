@@ -1,5 +1,5 @@
 #include "sprites.h"
-
+struct Sprite;
 /* function to initialize a sprite with its properties, and return a pointer */
 Sprite* sprite_init(int x, int y, enum SpriteSize size,
         int horizontal_flip, int vertical_flip, int tile_index, int priority) {
