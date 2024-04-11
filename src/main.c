@@ -11,9 +11,9 @@
 #include "background.h"
 #include "map.h"
 #include "map2.h"
-/* the width and height of the screen */
-#define WIDTH 240
-#define HEIGHT 160
+
+// SCREEN_WIDTH and SCREEN_HEIGHT defined here
+#include "game.h"
 
 /* the three tile modes */
 #define MODE0 0x00
