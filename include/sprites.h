@@ -34,7 +34,7 @@ volatile unsigned short* sprite_image_memory = (volatile unsigned short*) 0x6010
 
 Sprite* sprite_init(int x, int y, SpriteSize size, int horizontal_flip, int vertical_flip, int tile_index, int priority);
 void sprite_position(Sprite* sprite, int x, int y);
-void sprite_move(Sprite* sprte, int dx, in dy);
+void sprite_move(Sprite* sprite, int dx, int dy);
 void sprite_set_vertical_flip(Sprite* sprite, int vertical_flip);
 void sprite_set_horizontal_flip(Sprite* sprite, int horizontal_flip);
 void sprite_set_offset(Sprite* sprite, int offset);
