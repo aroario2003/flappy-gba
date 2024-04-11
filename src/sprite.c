@@ -33,7 +33,7 @@ Sprite* sprite_init(int x, int y, SpriteSize size,
                             (0 << 10) |         /* gfx mode */
                             (0 << 12) |         /* mosaic */
                             (1 << 13) |         /* color mode, 0:16, 1:256 */
-                            (shape_bits << 14); /* shape */
+                            (shape_bits << 14); /* shape*/
 
     /* set up the second attribute */
     sprites[index].attribute1 = x     |         /* x coordinate */

@@ -4,11 +4,13 @@
  */
 
 /* include the image we are using */
-#include "font.h"
+//#include "font.h"
 
 /* include the tile maps we are using for back and fore ground */
 #include "player.h"
-
+#include "background.h"
+#include "map.h"
+#include "map2.h"
 /* the width and height of the screen */
 #define WIDTH 240
 #define HEIGHT 160
