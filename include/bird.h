@@ -1,5 +1,3 @@
-#include "sprites.h"
-
 #ifndef BIRD_H
 #define BIRD_H
 

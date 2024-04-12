@@ -1,5 +1,10 @@
 #include "lib.h"
 #include "sprites.h"
+
+int next_sprite_index = 0;
+volatile unsigned short* sprite_attribute_memory = (volatile unsigned short*) 0x7000000;
+volatile unsigned short* sprite_image_memory = (volatile unsigned short*) 0x6010000;
+
 /* function to initialize a sprite with its properties, and return a pointer */
 Sprite* sprite_init(int x, int y, SpriteSize size,
         int horizontal_flip, int vertical_flip, int tile_index, int priority) {

@@ -14,6 +14,7 @@
 
 // SCREEN_WIDTH and SCREEN_HEIGHT defined here
 #include "game.h"
+#include "sprites.h"
 
 /* the three tile modes */
 #define MODE0 0x00
