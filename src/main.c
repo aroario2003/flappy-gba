@@ -1,20 +1,15 @@
-/*
- * tiles.c
- * program which demonstraes tile mode 0
- */
-
-/* include the image we are using */
-//#include "font.h"
-
 /* include the tile maps we are using for back and fore ground */
 #include "player.h"
 #include "background.h"
 #include "map.h"
 #include "map2.h"
-
-// SCREEN_WIDTH and SCREEN_HEIGHT defined here
+// SCREEN_WIDTH and SCREEN_HEIGHT defined here (below)
 #include "game.h"
 #include "sprites.h"
+#include "font.h"
+#include "fb_song.h"
+#include "bird.h"
+#include "scores.h"
 
 /* the three tile modes */
 #define MODE0 0x00
