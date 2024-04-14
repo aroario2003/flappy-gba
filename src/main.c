@@ -1,13 +1,15 @@
 /* include the tile maps we are using for back and fore ground */
 #include "player.h"
 #include "background.h"
+#include "background_night.h"
+#include "background_dusk.h"
 #include "map.h"
 #include "map2.h"
 // SCREEN_WIDTH and SCREEN_HEIGHT defined here (below)
 #include "game.h"
 #include "sprites.h"
 #include "font.h"
-#include "fb_song.h"
+//#include "fb_song.h"
 #include "bird.h"
 #include "scores.h"
 #include "starting_screen.h"
@@ -108,11 +110,20 @@ volatile unsigned short* screen_block(unsigned long block) {
 
 
 /* function to setup background 0 for this program */
-void setup_background() {
+//The 'mode' should be 0 for day, 1 for sunset, and 1 for night. Does not auto-set right now.
+void setup_background(int mode) {
 
     /* load the palette from the image into palette memory*/
     for (int i = 0; i < PALETTE_SIZE; i++) {
-        bg_palette[i] = background_palette[i];
+        if (mode==0){
+            bg_palette[i] = background_palette[i];
+        }
+        else if (mode==1){
+            bg_palette[i] = background_dusk_palette[i];
+        }
+        else if (mode==2){
+            bg_palette[i] = background_night_palette[i];
+        }
     }
 
     /* load the image into char block 0 (16 bits at a time) */
@@ -223,10 +234,12 @@ int main() {
     int game_ended = 0;
 
     /* setup the background 0 */
-    setup_background();
+    setup_background(0);
 
     setup_game_started();
-
+    //Will save the value of the last background. Used to change if the background changes in-game.
+    int lastBackground=0;
+    int currentBackground=0;
     /* set initial scroll to 0 */
     int xscroll = 0;
     int yscroll = 0;
@@ -250,6 +263,12 @@ int main() {
         *bg1_x_scroll = xscroll*2;
         //*bg1_y_scroll = yscroll*2;
 
+        
+        //relaods the background if you try to change it
+        if (currentBackground != lastBackground){
+            setup_background(currentBackground);
+        } 
+        lastBackground = currentBackground;
         /* delay some */
         delay(50);
     }

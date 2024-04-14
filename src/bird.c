@@ -55,3 +55,9 @@ void bird_update(Bird* bird) {
 
     sprite_position(bird->sprite, bird->x, bird->y);
 }
+
+//Moves the bird up. Should be called in main when you press 'a' (or whatever we agree is the move)
+void bird_up(Bird* bird){
+    //We may want it to be greater than or less than 5?
+    bird->y = bird->y+5;
+}
