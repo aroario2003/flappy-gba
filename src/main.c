@@ -11,6 +11,7 @@
 #include "bird.h"
 #include "scores.h"
 #include "starting_screen.h"
+// #include "starting_screen2.h"
 
 /* the three tile modes */
 #define MODE0 0x00
@@ -143,9 +144,65 @@ void setup_background() {
     for (int i = 0; i < (map_width * map_height); i++) {
         dest[i] = map[i];
     }
+    /* load the tile data into screen block 17 */
     dest = screen_block(17);
     for (int i = 0; i < (map_width * map_height); i++) {
         dest[i] = map2[i];
+    }
+}
+
+/* set up game started in background 2 */
+void setup_game_started() {
+
+    volatile unsigned short* dest = char_block(0);
+
+    /* works but not as intended */
+    unsigned short* image = (unsigned short*) background_data;
+    for (int i = 0; i < ((background_width * background_height) / 2); i++) {
+        dest[i] = image[i];
+    }
+
+    /* does not work
+    unsigned short* image = (unsigned short*) starting_screen2_data;
+    for (int i = 0; i < ((starting_screen2_width * starting_screen2_height) / 2); i++) {
+        dest[i] = image[i];
+    }
+     */
+
+
+    /* load palette supporting background and starting screen */
+    for (int i = 0; i < PALETTE_SIZE; i++) {
+        bg_palette[i] = starting_screen_and_background_palette[i];
+    }
+
+    *bg0_control = 2 |    /* priority, 0 is highest, 3 is lowest */
+                   (0 << 2)  |       /* the char block the image data is stored in */
+                   (0 << 6)  |       /* the mosaic flag */
+                   (1 << 7)  |       /* color mode, 0 is 16 colors, 1 is 256 colors */
+                   (16 << 8) |       /* the screen block the tile data is stored in */
+                   (1 << 13) |       /* wrapping flag */
+                   (0 << 14);        /* bg size, 0 is 256x256 */
+
+    *bg1_control = 1 |
+                   (0 << 2)  |
+                   (0 << 6)  |
+                   (1 << 7)  |
+                   (17 << 8) |
+                   (1 << 13) |
+                   (0 << 14);
+
+    *bg2_control = 0 |
+                   (0 << 2)  |
+                   (1 << 6)  |
+                   (1 << 7)  |
+                   (18 << 8) |
+                   (1 << 13) |
+                   (0 << 14);
+
+    /* load the tile data into screen block 18 */
+    dest = screen_block(18);
+    for (int i = 0; i < (starting_screen_width * starting_screen_height); i++) {
+        dest[i] = starting_screen[i];
     }
 }
 
@@ -160,8 +217,15 @@ int main() {
     /* we set the mode to mode 0 with bg0 on */
     *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE;
 
+    /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
+    int game_started = 1;
+    int game_in_progress = 0;
+    int game_ended = 0;
+
     /* setup the background 0 */
     setup_background();
+
+    setup_game_started();
 
     /* set initial scroll to 0 */
     int xscroll = 0;
