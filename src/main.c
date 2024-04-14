@@ -10,6 +10,7 @@
 #include "fb_song.h"
 #include "bird.h"
 #include "scores.h"
+#include "starting_screen.h"
 
 /* the three tile modes */
 #define MODE0 0x00
