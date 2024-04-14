@@ -134,7 +134,7 @@ void setup_background(int mode) {
     }
 
     /* set all control the bits in this register */
-    *bg0_control = 1 |    /* priority, 0 is highest, 3 is lowest */
+    *bg0_control = 2 |    /* priority, 0 is highest, 3 is lowest */
         (0 << 2)  |       /* the char block the image data is stored in */
         (0 << 6)  |       /* the mosaic flag */
         (1 << 7)  |       /* color mode, 0 is 16 colors, 1 is 256 colors */
@@ -142,7 +142,7 @@ void setup_background(int mode) {
         (1 << 13) |       /* wrapping flag */
         (0 << 14);        /* bg size, 0 is 256x256 */
     
-    *bg1_control = 0 |
+    *bg1_control = 1 |
         (0 << 2)  |
         (0 << 6)  |
         (1 << 7)  |
@@ -186,7 +186,7 @@ void setup_game_started() {
         bg_palette[i] = starting_screen_and_background_palette[i];
     }
 
-    *bg0_control = 2 |    /* priority, 0 is highest, 3 is lowest */
+  //  *bg0_control = 2 |    /* priority, 0 is highest, 3 is lowest */
                    (0 << 2)  |       /* the char block the image data is stored in */
                    (0 << 6)  |       /* the mosaic flag */
                    (1 << 7)  |       /* color mode, 0 is 16 colors, 1 is 256 colors */
@@ -194,7 +194,7 @@ void setup_game_started() {
                    (1 << 13) |       /* wrapping flag */
                    (0 << 14);        /* bg size, 0 is 256x256 */
 
-    *bg1_control = 1 |
+//    *bg1_control = 1 |
                    (0 << 2)  |
                    (0 << 6)  |
                    (1 << 7)  |
@@ -226,7 +226,7 @@ void delay(unsigned int amount) {
 /* the main function */
 int main() {
     /* we set the mode to mode 0 with bg0 on */
-    *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE;
+    *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
 
     /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
     int game_started = 1;
