@@ -1,5 +1,5 @@
 /* include the tile maps we are using for back and fore ground */
-#include "player.h"
+//#include "player.h"
 #include "background.h"
 #include "background_night.h"
 #include "background_dusk.h"
@@ -14,7 +14,7 @@
 #include "scores.h"
 #include "starting_screen.h"
 // #include "starting_screen2.h"
-
+#include "sprite.c"
 /* the three tile modes */
 #define MODE0 0x00
 #define MODE1 0x01
@@ -226,23 +226,26 @@ void delay(unsigned int amount) {
 /* the main function */
 int main() {
     /* we set the mode to mode 0 with bg0 on */
-    *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
-
+    *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;    
     /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
     int game_started = 1;
     int game_in_progress = 0;
     int game_ended = 0;
-
     /* setup the background 0 */
     setup_background(0);
-
     setup_game_started();
+    
     //Will save the value of the last background. Used to change if the background changes in-game.
     int lastBackground=0;
     int currentBackground=0;
     /* set initial scroll to 0 */
     int xscroll = 0;
     int yscroll = 0;
+     setup_sprite_image();
+     sprite_clear();
+
+    Bird bird;
+    bird_init(&bird);
     //Counter. Counts the amount of ticks we have gone along.
     int counter = 0;
     /* loop forever */

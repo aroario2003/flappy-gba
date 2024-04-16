@@ -1,18 +1,39 @@
 #include "lib.h"
 #include "sprites.h"
-
+#include "player.h"
+volatile unsigned short* sprite_palette = (volatile unsigned short*) 0x5000200;
 int next_sprite_index = 0;
+#define PALETTE_SIZE 256
 volatile unsigned short* sprite_attribute_memory = (volatile unsigned short*) 0x7000000;
 volatile unsigned short* sprite_image_memory = (volatile unsigned short*) 0x6010000;
+struct Sprite;
+void sprite_update_all() {
+    /* copy them all over */
+    memcpy16_dma((unsigned short*) sprite_attribute_memory, (unsigned short*) sprites, NUM_SPRITES * 4);
+}
+/* change the tile offset of a sprite */
+void sprite_set_offset(Sprite* sprite, int offset) {
+    /* clear the old offset */
+    sprite->attribute2 &= 0xfc00;
 
+    /* apply the new one */
+    sprite->attribute2 |= (offset & 0x03ff);
+}
+
+/* setup the sprite image and palette */
+void setup_sprite_image() {
+    /* load the palette from the image into palette memory*/
+    memcpy16_dma((unsigned short*) sprite_palette, (unsigned short*) player_palette, PALETTE_SIZE);
+
+    /* load the image into sprite image memory */
+    memcpy16_dma((unsigned short*) sprite_image_memory, (unsigned short*) player_data, (player_width * player_height) / 2);
+}
 /* function to initialize a sprite with its properties, and return a pointer */
 Sprite* sprite_init(int x, int y, SpriteSize size,
         int horizontal_flip, int vertical_flip, int tile_index, int priority) {
 
     /* grab the next index */
     int index = next_sprite_index++;
-
-    /* setup the bits used for each shape/size possible */
     int size_bits, shape_bits;
     switch (size) {
         case SIZE_8_8:   size_bits = 0; shape_bits = 0; break;
@@ -31,9 +52,10 @@ Sprite* sprite_init(int x, int y, SpriteSize size,
 
     int h = horizontal_flip ? 1 : 0;
     int v = vertical_flip ? 1 : 0;
-
+//Set to 16x16
+//Sprite offset: 4 tiles per sprite, 2x2, (0, 8, 16, 24)
     /* set up the first attribute */
-    sprites[index].attribute0 = y     |         /* y coordinate */
+    player_data[index].attribute0 = y     |         /* y coordinate */
                             (0 << 8)  |         /* rendering mode */
                             (0 << 10) |         /* gfx mode */
                             (0 << 12) |         /* mosaic */
@@ -41,19 +63,19 @@ Sprite* sprite_init(int x, int y, SpriteSize size,
                             (shape_bits << 14); /* shape*/
 
     /* set up the second attribute */
-    sprites[index].attribute1 = x     |         /* x coordinate */
+    player_data[index].attribute1 = x     |         /* x coordinate */
                             (0 << 9)  |         /* affine flag */
                             (h << 12) |         /* horizontal flip flag */
                             (v << 13) |         /* vertical flip flag */
                             (size_bits << 14);  /* size */
 
     /* setup the second attribute */
-    sprites[index].attribute2 = tile_index   |  /* tile index */
+    player_data[index].attribute2 = tile_index   |  /* tile index */
                             (priority << 10) |  /* priority */
                             (0 << 12);          /* palette bank (only 16 color)*/
 
     /* return pointer to this sprite */
-    return &sprites[index];
+    return &player_data[index];
 }
 
 /* set a sprite position */
@@ -103,19 +125,4 @@ void sprite_set_horizontal_flip(Sprite* sprite, int horizontal_flip) {
         /* clear the bit */
         sprite->attribute1 &= 0xefff;
     }
-}
-
-/* change the tile offset of a sprite */
-void sprite_set_offset(Sprite* sprite, int offset) {
-    /* clear the old offset */
-    sprite->attribute2 &= 0xfc00;
-
-    /* apply the new one */
-    sprite->attribute2 |= (offset & 0x03ff);
-}
-
-/* update all of the spries on the screen */
-void sprite_update_all() {
-    /* copy them all over */
-    memcpy16_dma((unsigned short*) sprite_attribute_memory, (unsigned short*) sprites, NUM_SPRITES * 4);
 }

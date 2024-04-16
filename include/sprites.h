@@ -3,7 +3,7 @@
 
 #define NUM_SPRITES 128
 
-typedef struct {
+typedef struct{
     unsigned short attribute0;
     unsigned short attribute1;
     unsigned short attribute2;

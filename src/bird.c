@@ -12,7 +12,7 @@ void bird_init(Bird* bird) {
     bird->move = 0;
     bird->counter = 0;
     bird->animation_delay = 8;
-    bird->sprite = sprite_init(bird->x, bird->y, SIZE_16_32, 0, 0, bird->frame, 0);
+    bird->sprite = sprite_init(bird->x, bird->y, SIZE_16_16, 0, 0, bird->frame, 0);
 }
 
 // TODO: change to go up
