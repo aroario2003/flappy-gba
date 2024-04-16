@@ -1,3 +1,5 @@
+	
+.global track_score
 track_score:	
 	cmp r0, #0		@ make sure player has not touched a portal
 	beq update_score	@ if the player has not, update their points
