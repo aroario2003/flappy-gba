@@ -11,11 +11,11 @@
 //#include "sprites.h"
 #include "font.h"
 //#include "fb_song.h"
+#include "sprites.h"
 #include "bird.h"
 #include "scores.h"
 #include "starting_screen.h"
 // #include "starting_screen2.h"
-#include "sprite.c"
 /* the three tile modes */
 #define MODE0 0x00
 #define MODE1 0x01
@@ -265,8 +265,8 @@ int main() {
     /* set initial scroll to 0 */
     int xscroll = 0;
     int yscroll = 0;
-     setup_sprite_image();
-     sprite_clear();
+    setup_sprite_image();
+    sprite_clear();
 
     Bird bird;
     bird_init(&bird);

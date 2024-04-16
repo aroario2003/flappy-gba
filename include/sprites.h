@@ -3,7 +3,7 @@
 
 #define NUM_SPRITES 128
 
-typedef struct{
+typedef struct {
     unsigned short attribute0;
     unsigned short attribute1;
     unsigned short attribute2;
@@ -36,5 +36,7 @@ void sprite_set_vertical_flip(Sprite* sprite, int vertical_flip);
 void sprite_set_horizontal_flip(Sprite* sprite, int horizontal_flip);
 void sprite_set_offset(Sprite* sprite, int offset);
 void sprite_update_all();
+void setup_sprite_image();
+void sprite_clear();
 
 #endif
