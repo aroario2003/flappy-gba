@@ -1,5 +1,6 @@
 /* include the tile maps we are using for back and fore ground */
 //#include "player.h"
+#include "flappin.h"
 #include "background.h"
 #include "background_night.h"
 #include "background_dusk.h"
@@ -19,14 +20,19 @@
 #define MODE0 0x00
 #define MODE1 0x01
 #define MODE2 0x02
+#define MODE3 0X0003
+#define BG2 0x0400
 
 /* enable bits for the four tile layers */
 #define BG0_ENABLE 0x100
 #define BG1_ENABLE 0x200
 #define BG2_ENABLE 0x400
 #define BG3_ENABLE 0x800
+#define WIDTH 240
+#define HEIGHT 160
 
 /* the control registers for the four tile layers */
+volatile unsigned short* screen = (volatile unsigned short*) 0x6000000;
 volatile unsigned short* bg0_control = (volatile unsigned short*) 0x4000008;
 volatile unsigned short* bg1_control = (volatile unsigned short*) 0x400000a;
 volatile unsigned short* bg2_control = (volatile unsigned short*) 0x400000c;
@@ -223,8 +229,26 @@ void delay(unsigned int amount) {
     for (int i = 0; i < amount * 10; i++);
 }
 
+void put_pixel_m3(int row, int col, unsigned short color) {
+    /* set the screen location to this color */
+    screen[row * WIDTH + col] = color;
+}
+
+void handle_start() {
+    while(!button_pressed(BUTTON_START)) {}
+}
+
 /* the main function */
 int main() {
+
+    *display_control = MODE3 | BG2;
+    for (int row = 0; row < HEIGHT; row++) {
+        for (int col = 0; col < WIDTH; col++) {
+            put_pixel_m3(row, col, flappin_data[row * WIDTH + col]);
+        }
+    }
+
+    handle_start();
     /* we set the mode to mode 0 with bg0 on */
     *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;    
     /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
