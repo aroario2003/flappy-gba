@@ -55,7 +55,7 @@ Sprite* sprite_init(int x, int y, SpriteSize size,
 //Set to 16x16
 //Sprite offset: 4 tiles per sprite, 2x2, (0, 8, 16, 24)
     /* set up the first attribute */
-    player_data[index].attribute0 = y     |         /* y coordinate */
+    sprites[index].attribute0 = y     |         /* y coordinate */
                             (0 << 8)  |         /* rendering mode */
                             (0 << 10) |         /* gfx mode */
                             (0 << 12) |         /* mosaic */
@@ -63,19 +63,19 @@ Sprite* sprite_init(int x, int y, SpriteSize size,
                             (shape_bits << 14); /* shape*/
 
     /* set up the second attribute */
-    player_data[index].attribute1 = x     |         /* x coordinate */
+    sprites[index].attribute1 = x     |         /* x coordinate */
                             (0 << 9)  |         /* affine flag */
                             (h << 12) |         /* horizontal flip flag */
                             (v << 13) |         /* vertical flip flag */
                             (size_bits << 14);  /* size */
 
     /* setup the second attribute */
-    player_data[index].attribute2 = tile_index   |  /* tile index */
+    sprites[index].attribute2 = tile_index   |  /* tile index */
                             (priority << 10) |  /* priority */
                             (0 << 12);          /* palette bank (only 16 color)*/
 
     /* return pointer to this sprite */
-    return &player_data[index];
+    return &sprites[index];
 }
 
 /* set a sprite position */

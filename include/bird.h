@@ -1,7 +1,7 @@
 #ifndef BIRD_H
 #define BIRD_H
 
-typedef struct {
+typedef struct{
   Sprite* sprite;
   int flap_delta;
   int gravity;

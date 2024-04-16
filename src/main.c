@@ -8,7 +8,7 @@
 #include "map2.h"
 // SCREEN_WIDTH and SCREEN_HEIGHT defined here (below)
 #include "game.h"
-#include "sprites.h"
+//#include "sprites.h"
 #include "font.h"
 //#include "fb_song.h"
 #include "bird.h"
