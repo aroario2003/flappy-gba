@@ -2,7 +2,6 @@
 #include "sprites.h"
 #include "player.h"
 #include "game.h"
-#define PALETTE_SIZE 256
 
 volatile unsigned short* sprite_attribute_memory = (volatile unsigned short*) 0x7000000;
 volatile unsigned short* sprite_image_memory = (volatile unsigned short*) 0x6010000;
