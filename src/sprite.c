@@ -2,6 +2,8 @@
 #include "sprites.h"
 #include "player.h"
 volatile unsigned short* sprite_palette = (volatile unsigned short*) 0x5000200;
+#define SCREEN_WIDTH 240
+#define SCREEN_HEIGHT 160
 int next_sprite_index = 0;
 #define PALETTE_SIZE 256
 volatile unsigned short* sprite_attribute_memory = (volatile unsigned short*) 0x7000000;
@@ -19,7 +21,16 @@ void sprite_set_offset(Sprite* sprite, int offset) {
     /* apply the new one */
     sprite->attribute2 |= (offset & 0x03ff);
 }
+void sprite_clear() {
+    /* clear the index counter */
+    next_sprite_index = 0;
 
+    /* move all sprites offscreen to hide them */
+    for(int i = 0; i < NUM_SPRITES; i++) {
+        sprites[i].attribute0 = SCREEN_HEIGHT;
+        sprites[i].attribute1 = SCREEN_WIDTH;
+    }
+}
 /* setup the sprite image and palette */
 void setup_sprite_image() {
     /* load the palette from the image into palette memory*/
