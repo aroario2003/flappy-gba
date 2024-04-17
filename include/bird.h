@@ -15,6 +15,7 @@ typedef struct {
   int counter;
   int animation_delay;
   int touched_portal;
+  int coin+_collected;
 } Bird;
 
 void bird_init(Bird* bird);
