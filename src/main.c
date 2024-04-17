@@ -243,7 +243,7 @@ void pipe_init(Pipe *pipe, int x, int y, int pipeType, int speed){
     pipe->y = y;
     pipe->speed = speed;
     pipe->pipeType = pipeType;
-    pipe->sprite=sprite_init(pipe->x, pipe->y, SIZE_16_16, 0, 0, pipe->pipeType, 0);
+    //pipe->sprite=sprite_init(pipe->x, pipe->y, SIZE_16_16, 0, 0, pipe->pipeType, 0);
 }
 
 //Moves a pipe each time it is called.
@@ -252,12 +252,16 @@ void pipe_move(Pipe *pipe){
 
     //Maybe it should be '-'? I am not positive.
    pipe->x = pipe->x + pipe->speed;
-
-
-    sprite_move(pipe->sprite, pipe->speed, 0);
+   sprite_move(pipe->sprite, pipe->speed, 0);
 
 }
 
+int pipe_collisions(Pipe* pipe, Bird* bird){
+    int birdLocation = bird->y; 
+    int pipeLocationTop = pipe->y;
+    //This one may need to be adjusted to either 'plus' or 'minus' when tested. May also be best to do a value other than 8? I am not positive if that ir 4 is the accurate option.
+    int pipeLocationBottom = pipe->y-8;
+}
 
 void setup_endscreen() {
     volatile unsigned short* dest = char_block(0);
@@ -341,16 +345,14 @@ int main() {
                 game_ended = 0;
                 break;
             }
-        
+          //   pipe_move(pipe);
+          //   pipe_move(pipe2);
             //TODO: Make bird move properly
         if (button_pressed(BUTTON_A)){
+            if (bird->y <= HEIGHT/2){
+                 *display_control = 0;
+            }
             sprite_move(theSprite, 0, -1);
-            if (bird-> frame == 1){
-                bird->frame =0;
-            }
-            else{
-                bird->frame =1;
-            }
             bird->y = bird->y - 1; 
         }
 
