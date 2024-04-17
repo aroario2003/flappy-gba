@@ -237,7 +237,6 @@ void handle_start() {
     setup_background(0);
 
 }
-struct Pipe;
 //Creates a pipe.
 void pipe_init(Pipe *pipe, int x, int y, int pipeType, int speed){
     pipe->x = x;
@@ -255,8 +254,7 @@ void pipe_move(Pipe *pipe){
    pipe->x = pipe->x + pipe->speed;
 
 
-    //TODO: An error occurs here. I comented it out for the time being. Claims that  variable or field `sprite_move' declared void
-    // void sprite_move=(pipe.sprite, pipe.speed, 0);
+    sprite_move(pipe->sprite, pipe->speed, 0);
 
 }
 
