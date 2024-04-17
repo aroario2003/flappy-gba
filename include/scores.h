@@ -2,6 +2,11 @@
 #define SCORES_H
 
 typedef struct {
+  int x;
+  int y;
+} Coin;
+
+typedef struct {
   int points;
   int coins;
 } Scores;

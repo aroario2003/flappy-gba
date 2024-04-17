@@ -3,7 +3,6 @@
 
 typedef struct {
   Sprite* sprite;
-  int flap_delta;
   int gravity;
   int is_falling;
   int x;
