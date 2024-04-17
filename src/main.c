@@ -29,8 +29,6 @@
 #define BG1_ENABLE 0x200
 #define BG2_ENABLE 0x400
 #define BG3_ENABLE 0x800
-#define WIDTH 240
-#define HEIGHT 160
 
 /* the control registers for the four tile layers */
 volatile unsigned short* screen = (volatile unsigned short*) 0x6000000;
@@ -38,9 +36,6 @@ volatile unsigned short* bg0_control = (volatile unsigned short*) 0x4000008;
 volatile unsigned short* bg1_control = (volatile unsigned short*) 0x400000a;
 volatile unsigned short* bg2_control = (volatile unsigned short*) 0x400000c;
 volatile unsigned short* bg3_control = (volatile unsigned short*) 0x400000e;
-
-/* palette is always 256 colors */
-#define PALETTE_SIZE 256
 
 /* the display control pointer points to the gba graphics register */
 volatile unsigned long* display_control = (volatile unsigned long*) 0x4000000;
