@@ -303,16 +303,18 @@ int main() {
     theSprite = sprite_init(100, 100, SIZE_16_16, 0, 0, 12, 0);
 
     handle_start();
+
+    Game game;
+    game.game_started = 0;
+    game.game_in_progress = 1;
+    game.game_ended = 0;
+
 #define SPRITE_ENABLE 0x1000
 #define SPRITE_MAP_1D 0x40
     while (1) {
         /* we set the mode to mode 0 with bg0 on */
         *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | SPRITE_ENABLE | SPRITE_MAP_1D;
         /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
-	Game game;
-        game.game_started = 0;
-        game.game_in_progress = 1;
-        game.game_ended = 0;
         /* setup the background 0 */
         setup_background(0);
         //Will save the value of the last background. Used to change if the background changes in-game.
