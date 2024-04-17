@@ -7,5 +7,6 @@ typedef struct {
 } Scores;
 
 int track_score(int touched_portal, int points);
+int track_coins(int coin_collected, int coins);
 
 #endif 
