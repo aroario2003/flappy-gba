@@ -13,6 +13,7 @@
 //#include "fb_song.h"
 #include "sprites.h"
 #include "bird.h"
+#include "pipe.h"
 #include "scores.h"
 #include "starting_screen.h"
 // #include "starting_screen2.h"
@@ -231,6 +232,28 @@ void handle_start() {
     setup_background(0);
 
 }
+
+    //Creates a pipe.
+    void pipe_init(struct Pipe* pipe, int x, int y, int pipeType, int speed){
+        pipe->x = x;
+        pipe->y = y;
+        pipe->speed = speed;
+        pipe->pipeType = pipeType;
+        pipe->sprite=sprite_init(pipe->x, pipe->y, SIZE_16_16, 0, 0, pipe->pipeType, 0);
+    }
+    
+    //Moves a pipe each time it is called.
+    void pipe_move(struct Pipe pipe){
+        //TODO: Add code that checks if it is at the end. When it is at the end, you can despawn the pipe. Should probably be done with an if statement that checks if x+speed is at the end of the code.
+
+        //Maybe it should be '-'? I am not positive.
+        pipe.x = pipe.x + pipe.speed;
+        
+        
+        //TODO: An error occurs here. I comented it out for the time being. Claims that  variable or field `sprite_move' declared void
+     // void sprite_move=(pipe.sprite, pipe.speed, 0);
+        
+    }
 
 /* the main function */
 int main() {

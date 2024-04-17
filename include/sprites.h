@@ -39,6 +39,4 @@ void sprite_update_all();
 void setup_sprite_image();
 void sprite_clear();
 
-void pipe_init(int x, int y, int pipeType, int speed);
-void pipe_move(int x, int speed);
-void pipe_collisions(int x, int y);
+#endif
