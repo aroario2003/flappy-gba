@@ -359,6 +359,7 @@ int main() {
                   *display_control = 0; 
             }
         }
+    }
         sprite_move(sprite2, -1, 0);
             //Calls a function to update the bird's position on-screen 
             bird_update(bird);
