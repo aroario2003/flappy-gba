@@ -179,14 +179,6 @@ void setup_game_started() {
         dest[i] = image[i];
     }
 
-    /* does not work
-    unsigned short* image = (unsigned short*) starting_screen2_data;
-    for (int i = 0; i < ((starting_screen2_width * starting_screen2_height) / 2); i++) {
-        dest[i] = image[i];
-    }
-     */
-
-
     /* load palette supporting background and starting screen */
     for (int i = 0; i < PALETTE_SIZE; i++) {
         bg_palette[i] = starting_screen_and_background_palette[i];
@@ -236,6 +228,8 @@ void put_pixel_m3(int row, int col, unsigned short color) {
 
 void handle_start() {
     while(!button_pressed(BUTTON_START)) {}
+    setup_background(0);
+
 }
 
 /* the main function */
@@ -250,7 +244,7 @@ int main() {
 
     handle_start();
     /* we set the mode to mode 0 with bg0 on */
-    *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;    
+    *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE; 
     /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
     int game_started = 1;
     int game_in_progress = 0;
@@ -276,7 +270,6 @@ int main() {
     while (1) {
         //Increment counter.
         counter = counter+1;
-
         //Checks if the counter is divisable by 10. If it is, moves the screen. I ued 10 to slow it down to look more natural.
 
         if (counter%10==0){
