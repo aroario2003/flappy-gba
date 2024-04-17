@@ -355,8 +355,6 @@ int main() {
             else{
                 sprite_move(theSprite, 0, -1);
                 bird->y = bird->y - 1; 
-            if (bird->y <= HEIGHT/2) {
-                  *display_control = 0; 
             }
         }
     }
