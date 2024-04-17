@@ -329,8 +329,66 @@ int main() {
         bird_init(bird);
         //Counter. Counts the amount of ticks we have gone along.
         int counter = 0;
-        Sprite* sprite2;
-        sprite2 = sprite_init(100, 100, SIZE_16_16, 0, 0, 34, 0);
+            //PIPE 1
+            Sprite* sprite2;
+            Sprite* sprite3;
+            Sprite* sprite4;
+            Sprite* sprite5;
+            Sprite* sprite6;
+            Sprite* sprite7;
+            Sprite* sprite8;
+            Sprite* sprite9;
+            Sprite* spritea;
+            Sprite* spriteb;
+            Sprite* spritec;
+            Sprite* sprited;
+            spritea=sprite_init(WIDTH, HEIGHT-10, SIZE_16_16, 0, 0, 64, 0);
+            spriteb=sprite_init(WIDTH, HEIGHT-20, SIZE_16_16, 0, 0, 64, 0);
+            spritec=sprite_init(WIDTH, HEIGHT-30, SIZE_16_16, 0, 0, 64, 0);
+            sprited=sprite_init(WIDTH, HEIGHT-40, SIZE_16_16, 0, 0, 64, 0);
+            sprite4 = sprite_init(WIDTH, 0, SIZE_16_16, 0, 0, 64, 0);
+            sprite3 = sprite_init(WIDTH, 10, SIZE_16_16, 0, 0, 64, 0);
+            sprite2 = sprite_init(WIDTH, 20, SIZE_16_16, 0, 0, 64, 0);
+            sprite5 = sprite_init(WIDTH, 30, SIZE_16_16, 0, 0, 64, 0);
+            sprite6 = sprite_init(WIDTH, 40, SIZE_16_16, 0, 0, 64, 0);
+            sprite7 = sprite_init(WIDTH, 50, SIZE_16_16, 0, 0, 64, 0);
+            sprite8 = sprite_init(WIDTH, 60, SIZE_16_16, 0, 0, 64, 0);
+            sprite9 = sprite_init(WIDTH, 70, SIZE_16_16, 0, 0, 64, 0);
+
+            //PIPE 2
+            Sprite* s1prite;
+            Sprite* s2prite;
+            Sprite* s3prite;
+            Sprite* s4prite;
+            Sprite* s5prite;
+            Sprite* s6prite;
+            Sprite* s7prite;
+            Sprite* s8prite;
+            Sprite* s9prite;
+            Sprite* asprite;
+            Sprite* bsprite;
+            Sprite* csprite;
+            Sprite* dsprite;
+
+            s1prite = sprite_init(0, HEIGHT-10, SIZE_16_16, 0, 0, 64, 0);
+            s2prite = sprite_init(0, HEIGHT-20, SIZE_16_16, 0, 0, 64, 0);
+            s3prite = sprite_init(0, HEIGHT-30, SIZE_16_16, 0, 0, 64, 0);
+            s4prite = sprite_init(0, HEIGHT-40, SIZE_16_16, 0, 0, 64, 0);
+            s6prite = sprite_init(0, HEIGHT-50, SIZE_16_16, 0, 0, 64, 0);
+            s7prite = sprite_init(0, HEIGHT-60, SIZE_16_16, 0, 0, 64, 0);
+            s8prite = sprite_init(0, HEIGHT-70, SIZE_16_16, 0, 0, 64, 0);
+            s9prite = sprite_init(0, HEIGHT-80, SIZE_16_16, 0, 0, 64, 0);
+            asprite = sprite_init(0, 10, SIZE_16_16, 0, 0, 64, 0);
+            bsprite = sprite_init(0, 20, SIZE_16_16, 0, 0, 64, 0);
+            csprite = sprite_init(0, 30, SIZE_16_16, 0, 0, 64, 0);
+            dsprite = sprite_init(0, 0, SIZE_16_16, 0, 0, 64, 0);
+
+
+
+
+
+
+
         /* loop forever */
         while (1) {
             //Kill switch 
@@ -350,15 +408,42 @@ int main() {
            
             //TODO: Make bird move properly
         if (button_pressed(BUTTON_A)){
-            if (bird->y-1 >= 16){
-            }
-            else{
+            if (bird->y-1 <= 16){
                 sprite_move(theSprite, 0, -1);
                 bird->y = bird->y - 1; 
             }
+            else{
+            }
         }
-    }
+        //Move Pipe 1
+        sprite_move(sprite5, -1, 0);
+        sprite_move(sprite6, -1, 0);
+        sprite_move(sprite7, -1, 0);
+        sprite_move(sprite8, -1, 0);
+        sprite_move(sprite9, -1, 0);
+        sprite_move(spritea, -1, 0);
+        sprite_move(spriteb, -1, 0);
+        sprite_move(spritec,-1,0);
+        sprite_move(sprited,-1,0);
+        sprite_move(sprite3, -1, 0);
+        sprite_move(sprite4, -1, 0);
         sprite_move(sprite2, -1, 0);
+
+        //Move Pipe 2
+        sprite_move(s1prite, -1, 0);
+        sprite_move(s2prite, -1, 0);
+        sprite_move(s3prite, -1, 0);
+        sprite_move(s4prite, -1, 0);
+        sprite_move(s5prite, -1, 0);
+        sprite_move(s6prite, -1, 0);
+        sprite_move(s7prite, -1, 0);
+        sprite_move(s8prite, -1, 0);
+        sprite_move(s9prite, -1, 0);
+        sprite_move(asprite, -1, 0);
+        sprite_move(bsprite, -1, 0);
+        sprite_move(csprite, -1, 0);
+        sprite_move(dsprite, -1, 0);
+
             //Calls a function to update the bird's position on-screen 
             bird_update(bird);
             //Increment counter.
@@ -375,7 +460,12 @@ int main() {
             //*bg0_y_scroll = yscroll;
             *bg1_x_scroll = xscroll * 2;
             //*bg1_y_scroll = yscroll*2;
-
+            if (counter == 1000){
+                currentBackground = 1;
+            }
+            else if (counter == 2000){
+                currentBackground = 2;
+            }
 
             //relaods the background if you try to change it
             if (currentBackground != lastBackground) {
