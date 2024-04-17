@@ -309,9 +309,10 @@ int main() {
         /* we set the mode to mode 0 with bg0 on */
         *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | SPRITE_ENABLE | SPRITE_MAP_1D;
         /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
-        int game_started = 0;
-        int game_in_progress = 1;
-        int game_ended = 0;
+	Game game;
+        game.game_started = 0;
+        game.game_in_progress = 1;
+        game.game_ended = 0;
         /* setup the background 0 */
         setup_background(0);
         //Will save the value of the last background. Used to change if the background changes in-game.
@@ -329,16 +330,16 @@ int main() {
         /* loop forever */
         while (1) {
             //Kill switch 
-            if (button_pressed(BUTTON_SELECT) && game_ended == 0) {
+            if (button_pressed(BUTTON_SELECT) && game.game_ended == 0) {
                 *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
                 setup_endscreen();
-                game_ended = 1;
-                game_in_progress = 0;
+                game.game_ended = 1;
+                game.game_in_progress = 0;
             }
             //Start again if you die
-            if (button_pressed(BUTTON_START) && game_ended == 1) {
-                game_started = 1;
-                game_ended = 0;
+            if (button_pressed(BUTTON_START) && game.game_ended == 1) {
+                game.game_started = 1;
+                game.game_ended = 0;
                 break;
             }
         

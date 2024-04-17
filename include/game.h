@@ -7,7 +7,9 @@
 #define PALETTE_SIZE 256
 
 typedef struct {
-  // TODO: add fields
+  int game_started;
+  int game_in_progress;
+  int game_ended;
 } Game;
 
 #endif
