@@ -15,7 +15,9 @@
 #include "bird.h"
 #include "pipe.h"
 #include "scores.h"
-#include "starting_screen.h"
+//#include "starting_screen.h"
+#include "end_screen_tiles.h"
+#include "end_game.h"
 // #include "starting_screen2.h"
 /* the three tile modes */
 #define MODE0 0x00
@@ -29,6 +31,10 @@
 #define BG1_ENABLE 0x200
 #define BG2_ENABLE 0x400
 #define BG3_ENABLE 0x800
+
+/* needed for start screen */
+#define WIDTH 240
+#define HEIGHT 160
 
 /* the control registers for the four tile layers */
 volatile unsigned short* screen = (volatile unsigned short*) 0x6000000;
@@ -137,20 +143,20 @@ void setup_background(int mode) {
 
     /* set all control the bits in this register */
     *bg0_control = 2 |    /* priority, 0 is highest, 3 is lowest */
-        (0 << 2)  |       /* the char block the image data is stored in */
-        (0 << 6)  |       /* the mosaic flag */
-        (1 << 7)  |       /* color mode, 0 is 16 colors, 1 is 256 colors */
-        (16 << 8) |       /* the screen block the tile data is stored in */
-        (1 << 13) |       /* wrapping flag */
-        (0 << 14);        /* bg size, 0 is 256x256 */
-    
+                   (0 << 2)  |       /* the char block the image data is stored in */
+                   (0 << 6)  |       /* the mosaic flag */
+                   (1 << 7)  |       /* color mode, 0 is 16 colors, 1 is 256 colors */
+                   (16 << 8) |       /* the screen block the tile data is stored in */
+                   (1 << 13) |       /* wrapping flag */
+                   (0 << 14);        /* bg size, 0 is 256x256 */
+
     *bg1_control = 1 |
-        (0 << 2)  |
-        (0 << 6)  |
-        (1 << 7)  |
-        (17 << 8) |
-        (1 << 13) |
-        (0 << 14);
+                   (0 << 2)  |
+                   (0 << 6)  |
+                   (1 << 7)  |
+                   (17 << 8) |
+                   (1 << 13) |
+                   (0 << 14);
 
     /* load the tile data into screen block 16 */
     dest = screen_block(16);
@@ -164,37 +170,40 @@ void setup_background(int mode) {
     }
 }
 
+/* DEPRECIATED */
 /* set up game started in background 2 */
+/*
 void setup_game_started() {
 
     volatile unsigned short* dest = char_block(0);
 
-    /* works but not as intended */
+    // works but not as intended
     unsigned short* image = (unsigned short*) background_data;
     for (int i = 0; i < ((background_width * background_height) / 2); i++) {
         dest[i] = image[i];
     }
 
-    /* load palette supporting background and starting screen */
+    // load palette supporting background and starting screen
     for (int i = 0; i < PALETTE_SIZE; i++) {
         bg_palette[i] = starting_screen_and_background_palette[i];
     }
 
-  //  *bg0_control = 2 |    /* priority, 0 is highest, 3 is lowest */
-                   (0 << 2)  |       /* the char block the image data is stored in */
-                   (0 << 6)  |       /* the mosaic flag */
-                   (1 << 7)  |       /* color mode, 0 is 16 colors, 1 is 256 colors */
-                   (16 << 8) |       /* the screen block the tile data is stored in */
-                   (1 << 13) |       /* wrapping flag */
-                   (0 << 14);        /* bg size, 0 is 256x256 */
+
+    //  *bg0_control = 2 |
+    //(0 << 2)  |
+    //(0 << 6)  |
+    //(1 << 7)  |
+    //(16 << 8) |
+    //(1 << 13) |
+    //(0 << 14);
 
 //    *bg1_control = 1 |
-                   (0 << 2)  |
-                   (0 << 6)  |
-                   (1 << 7)  |
-                   (17 << 8) |
-                   (1 << 13) |
-                   (0 << 14);
+    (0 << 2)  |
+    (0 << 6)  |
+    (1 << 7)  |
+    (17 << 8) |
+    (1 << 13) |
+    (0 << 14);
 
     *bg2_control = 0 |
                    (0 << 2)  |
@@ -204,12 +213,13 @@ void setup_game_started() {
                    (1 << 13) |
                    (0 << 14);
 
-    /* load the tile data into screen block 18 */
-    dest = screen_block(18);
-    for (int i = 0; i < (starting_screen_width * starting_screen_height); i++) {
-        dest[i] = starting_screen[i];
-    }
-}
+    // load the tile data into screen block 18
+   // dest = screen_block(18);
+ //   for (int i = 0; i < (starting_screen_width * starting_screen_height); i++) {
+  //      dest[i] = starting_screen[i];
+ //   }
+//}
+*/
 
 
 /* just kill time */
@@ -228,27 +238,59 @@ void handle_start() {
 
 }
 
-    //Creates a pipe.
-    void pipe_init(struct Pipe* pipe, int x, int y, int pipeType, int speed){
-        pipe->x = x;
-        pipe->y = y;
-        pipe->speed = speed;
-        pipe->pipeType = pipeType;
-        pipe->sprite=sprite_init(pipe->x, pipe->y, SIZE_16_16, 0, 0, pipe->pipeType, 0);
-    }
-    
-    //Moves a pipe each time it is called.
-    void pipe_move(struct Pipe pipe){
-        //TODO: Add code that checks if it is at the end. When it is at the end, you can despawn the pipe. Should probably be done with an if statement that checks if x+speed is at the end of the code.
+//Creates a pipe.
+/*
+void pipe_init(struct Pipe* pipe, int x, int y, int pipeType, int speed){
+    pipe->x = x;
+    pipe->y = y;
+    pipe->speed = speed;
+    pipe->pipeType = pipeType;
+    pipe->sprite=sprite_init(pipe->x, pipe->y, SIZE_16_16, 0, 0, pipe->pipeType, 0);
+}
 
-        //Maybe it should be '-'? I am not positive.
-        pipe.x = pipe.x + pipe.speed;
-        
-        
-        //TODO: An error occurs here. I comented it out for the time being. Claims that  variable or field `sprite_move' declared void
-     // void sprite_move=(pipe.sprite, pipe.speed, 0);
-        
+//Moves a pipe each time it is called.
+void pipe_move(struct Pipe pipe){
+    //TODO: Add code that checks if it is at the end. When it is at the end, you can despawn the pipe. Should probably be done with an if statement that checks if x+speed is at the end of the code.
+
+    //Maybe it should be '-'? I am not positive.
+    pipe.x = pipe.x + pipe.speed;
+
+
+    //TODO: An error occurs here. I comented it out for the time being. Claims that  variable or field `sprite_move' declared void
+    // void sprite_move=(pipe.sprite, pipe.speed, 0);
+
+}
+ */
+
+void setup_endscreen() {
+    volatile unsigned short* dest = char_block(0);
+
+    /* works somewhat */
+    unsigned short* image = (unsigned short*) end_screen_tiles_data;
+    for (int i = 0; i < ((end_screen_tiles_width * end_screen_tiles_height) / 2); i++) {
+        dest[i] = image[i];
     }
+
+    /* load palette supporting background and ending screen */
+    for (int i = 0; i < PALETTE_SIZE; i++) {
+        bg_palette[i] = end_screen_tiles_palette[i];
+    }
+
+    *bg2_control = 0 |
+                   (0 << 2)  |
+                   (0 << 6)  |
+                   (1 << 7)  |
+                   (18 << 8) |
+                   (1 << 13) |
+                   (0 << 14);
+
+    /* load the tile data into screen block 18 */
+    dest = screen_block(18);
+    for (int i = 0; i < (end_game_width * end_game_height); i++) {
+        dest[i] = end_game[i];
+    }
+
+}
 
 /* the main function */
 int main() {
@@ -261,54 +303,70 @@ int main() {
     }
 
     handle_start();
-    /* we set the mode to mode 0 with bg0 on */
-    *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE; 
-    /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
-    int game_started = 1;
-    int game_in_progress = 0;
-    int game_ended = 0;
-    /* setup the background 0 */
-    setup_background(0);
-    setup_game_started();
-    
-    //Will save the value of the last background. Used to change if the background changes in-game.
-    int lastBackground=0;
-    int currentBackground=0;
-    /* set initial scroll to 0 */
-    int xscroll = 0;
-    int yscroll = 0;
-    setup_sprite_image();
-    sprite_clear();
 
-    Bird bird;
-    bird_init(&bird);
-    //Counter. Counts the amount of ticks we have gone along.
-    int counter = 0;
-    /* loop forever */
     while (1) {
-        //Increment counter.
-        counter = counter+1;
-        //Checks if the counter is divisable by 10. If it is, moves the screen. I ued 10 to slow it down to look more natural.
+        /* we set the mode to mode 0 with bg0 on */
+        *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE;
+        /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
+        int game_started = 0;
+        int game_in_progress = 1;
+        int game_ended = 0;
+        /* setup the background 0 */
+        setup_background(0);
+        //setup_game_started();
 
-        if (counter%10==0){
-            xscroll++;
+        //Will save the value of the last background. Used to change if the background changes in-game.
+        int lastBackground = 0;
+        int currentBackground = 0;
+        /* set initial scroll to 0 */
+        int xscroll = 0;
+        int yscroll = 0;
+        setup_sprite_image();
+        sprite_clear();
+
+        Bird bird;
+        bird_init(&bird);
+        //Counter. Counts the amount of ticks we have gone along.
+        int counter = 0;
+        /* loop forever */
+        while (1) {
+
+            if (button_pressed(BUTTON_A)) {
+                *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
+                setup_endscreen();
+                game_ended = 1;
+                game_in_progress = 0;
+            }
+
+            if (button_pressed(BUTTON_START) && game_ended == 1) {
+                game_started = 1;
+                game_ended = 0;
+                break;
+            }
+
+            //Increment counter.
+            counter = counter + 1;
+            //Checks if the counter is divisable by 10. If it is, moves the screen. I ued 10 to slow it down to look more natural.
+
+            if (counter % 10 == 0) {
+                xscroll++;
+            }
+
+            /* wait for vblank before scrolling */
+            wait_vblank();
+            *bg0_x_scroll = xscroll;
+            //*bg0_y_scroll = yscroll;
+            *bg1_x_scroll = xscroll * 2;
+            //*bg1_y_scroll = yscroll*2;
+
+
+            //relaods the background if you try to change it
+            if (currentBackground != lastBackground) {
+                setup_background(currentBackground);
+            }
+            lastBackground = currentBackground;
+            /* delay some */
+            delay(50);
         }
-
-        /* wait for vblank before scrolling */
-        wait_vblank();
-        *bg0_x_scroll = xscroll;
-        //*bg0_y_scroll = yscroll;
-        *bg1_x_scroll = xscroll*2;
-        //*bg1_y_scroll = yscroll*2;
-
-        
-        //relaods the background if you try to change it
-        if (currentBackground != lastBackground){
-            setup_background(currentBackground);
-        } 
-        lastBackground = currentBackground;
-        /* delay some */
-        delay(50);
     }
 }
-
