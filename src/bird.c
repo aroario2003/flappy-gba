@@ -16,17 +16,20 @@ void bird_init(Bird* bird) {
 }
 
 // TODO: change to go up
-int bird_right(Bird* bird) {
+int bird_up(Bird* bird) {
     /* face right */
+    bird->y = 0;
+    sprite_set_vertical_flip(bird->sprite, 1);
+    return 0;
     sprite_set_horizontal_flip(bird->sprite, 0);
     bird->move = 1;
-
+    //sprite_move(bird->sprite, 1, 0);
     /* if we are at the right end, just scroll the screen */
-    if (bird->x > (SCREEN_WIDTH - 16 - bird->border)) {
+    if (bird->x > (SCREEN_HEIGHT - 16 - bird->border)) {
         return 1;
     } else {
         /* else move right */
-        bird->x++;
+        bird->y++;
         return 0;
     }
 }
@@ -56,8 +59,3 @@ void bird_update(Bird* bird) {
     sprite_position(bird->sprite, bird->x, bird->y);
 }
 
-//Moves the bird up. Should be called in main when you press 'a' (or whatever we agree is the move)
-void bird_up(Bird* bird){
-    //We may want it to be greater than or less than 5?
-    bird->y = bird->y+5;
-}

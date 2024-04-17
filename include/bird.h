@@ -18,9 +18,9 @@ typedef struct {
 } Bird;
 
 void bird_init(Bird* bird);
-int bird_right(Bird* bird);
+//int bird_right(Bird* bird);
 void bird_stop(Bird* bird);
 void bird_update(Bird* bird);
-void bird_up(Bird* bird);
+int bird_up(Bird* bird);
 
 #endif

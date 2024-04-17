@@ -298,20 +298,21 @@ int main() {
             put_pixel_m3(row, col, flappin_data[row * WIDTH + col]);
         }
     }
+    Sprite* theSprite;
+    theSprite = sprite_init(100, 100, SIZE_16_16, 0, 0, 12, 0);
 
     handle_start();
-
+#define SPRITE_ENABLE 0x1000
+#define SPRITE_MAP_1D 0x40
     while (1) {
         /* we set the mode to mode 0 with bg0 on */
-        *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE;
+        *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | SPRITE_ENABLE | SPRITE_MAP_1D;
         /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
         int game_started = 0;
         int game_in_progress = 1;
         int game_ended = 0;
         /* setup the background 0 */
         setup_background(0);
-        //setup_game_started();
-
         //Will save the value of the last background. Used to change if the background changes in-game.
         int lastBackground = 0;
         int currentBackground = 0;
@@ -320,27 +321,40 @@ int main() {
         int yscroll = 0;
         setup_sprite_image();
         sprite_clear();
-
-        Bird bird;
-        bird_init(&bird);
+        Bird* bird;
+        bird_init(bird);
         //Counter. Counts the amount of ticks we have gone along.
         int counter = 0;
         /* loop forever */
         while (1) {
-
-            if (button_pressed(BUTTON_A)) {
+            //Kill switch 
+            if (button_pressed(BUTTON_SELECT) && game_ended == 0) {
                 *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
                 setup_endscreen();
                 game_ended = 1;
                 game_in_progress = 0;
             }
-
+            //Start again if you die
             if (button_pressed(BUTTON_START) && game_ended == 1) {
                 game_started = 1;
                 game_ended = 0;
                 break;
             }
+        
+            //TODO: Make bird move properly
+        if (button_pressed(BUTTON_A)){
+            sprite_move(theSprite, 0, -1);
+            if (bird-> frame == 1){
+                bird->frame =0;
+            }
+            else{
+                bird->frame =1;
+            }
+            bird->y = bird->y - 1; 
+        }
 
+            //Calls a function to update the bird's position on-screen 
+            bird_update(bird);
             //Increment counter.
             counter = counter + 1;
             //Checks if the counter is divisable by 10. If it is, moves the screen. I ued 10 to slow it down to look more natural.
@@ -361,6 +375,9 @@ int main() {
             if (currentBackground != lastBackground) {
                 setup_background(currentBackground);
             }
+            
+            //Updates where the sprites are located
+            sprite_update_all();
             lastBackground = currentBackground;
             /* delay some */
             delay(50);
