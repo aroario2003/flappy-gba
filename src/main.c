@@ -20,7 +20,7 @@
 #include "end_game.h"
 #include "stdio.h"
 #include "font_and_background.h"
-#include "numbers.h"
+//#include "numbers.h"
 // #include "starting_screen2.h"
 /* the three tile modes */
 #define MODE0 0x00
@@ -731,7 +731,7 @@ int main() {
             }
 
             //relaods the background if you try to change it
-            if (currentBackground != lastBackground) {
+            if (currentBackground != lastBackground && game_in_progress == 1) {
                 setup_background(currentBackground);
             }
             
