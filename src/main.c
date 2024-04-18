@@ -194,57 +194,6 @@ void setup_background(int mode) {
 //    }
 }
 
-/* DEPRECIATED */
-/* set up game started in background 2 */
-/*
-void setup_game_started() {
-
-    volatile unsigned short* dest = char_block(0);
-
-    // works but not as intended
-    unsigned short* image = (unsigned short*) background_data;
-    for (int i = 0; i < ((background_width * background_height) / 2); i++) {
-        dest[i] = image[i];
-    }
-
-    // load palette supporting background and starting screen
-    for (int i = 0; i < PALETTE_SIZE; i++) {
-        bg_palette[i] = starting_screen_and_background_palette[i];
-    }
-
-
-    //  *bg0_control = 2 |
-    //(0 << 2)  |
-    //(0 << 6)  |
-    //(1 << 7)  |
-    //(16 << 8) |
-    //(1 << 13) |
-    //(0 << 14);
-
-//    *bg1_control = 1 |
-    (0 << 2)  |
-    (0 << 6)  |
-    (1 << 7)  |
-    (17 << 8) |
-    (1 << 13) |
-    (0 << 14);
-
-    *bg2_control = 0 |
-                   (0 << 2)  |
-                   (0 << 6)  |
-                   (1 << 7)  |
-                   (18 << 8) |
-                   (1 << 13) |
-                   (0 << 14);
-
-    // load the tile data into screen block 18
-   // dest = screen_block(18);
- //   for (int i = 0; i < (starting_screen_width * starting_screen_height); i++) {
-  //      dest[i] = starting_screen[i];
- //   }
-//}
-*/
-
 
 /* just kill time */
 void delay(unsigned int amount) {
@@ -272,9 +221,6 @@ void pipe_init(Pipe *pipe, int x, int y, int pipeType, int speed){
 
 //Moves a pipe each time it is called.
 void pipe_move(Pipe *pipe){
-    //TODO: Add code that checks if it is at the end. When it is at the end, you can despawn the pipe. Should probably be done with an if statement that checks if x+speed is at the end of the code.
-
-    //Maybe it should be '-'? I am not positive.
    pipe->x = pipe->x + pipe->speed;
    sprite_move(pipe->sprite, pipe->speed, 0);
 
@@ -283,7 +229,6 @@ void pipe_move(Pipe *pipe){
 int pipe_collisions(Pipe* pipe, Bird* bird){
     int birdLocation = bird->y; 
     int pipeLocationTop = pipe->y;
-    //This one may need to be adjusted to either 'plus' or 'minus' when tested. May also be best to do a value other than 8? I am not positive if that ir 4 is the accurate option.
     int pipeLocationBottom = pipe->y-8;
 }
 
@@ -642,18 +587,19 @@ int main() {
             if (button_pressed(BUTTON_START) && game_ended == 1) {
                 game_started = 1;
                 game_ended = 0;
+                counter = 0;
                 break;
             }
 
            
             //TODO: Make bird move properly
-        if (button_pressed(BUTTON_A)){
+        if (button_pressed(BUTTON_A)&& counter%2 == 0){
             if ((theSprite->attribute0 & 0xff) > 0) {
                 sprite_move(theSprite, 0, -1);
                 bird->y = bird->y - 1; 
             }
         }
-        else if ((theSprite->attribute0 & 0xff) < 148) {
+        else if ((theSprite->attribute0 & 0xff) < 148 && counter%2 == 0) {
             sprite_move(theSprite, 0, 1);
             bird->y = bird->y + 1;
         }
