@@ -19,6 +19,8 @@
 #include "end_screen_tiles.h"
 #include "end_game.h"
 #include "stdio.h"
+#include "font_and_background.h"
+#include "numbers.h"
 // #include "starting_screen2.h"
 /* the three tile modes */
 #define MODE0 0x00
@@ -125,7 +127,7 @@ void setup_background(int mode) {
     /* load the palette from the image into palette memory*/
     for (int i = 0; i < PALETTE_SIZE; i++) {
         if (mode==0){
-            bg_palette[i] = background_palette[i];
+            bg_palette[i] = font_and_background_palette[i];
         }
         else if (mode==1){
             bg_palette[i] = background_dusk_palette[i];
@@ -169,6 +171,27 @@ void setup_background(int mode) {
     for (int i = 0; i < (map_width * map_height); i++) {
         dest[i] = map2[i];
     }
+
+// TODO FIX THIS FOR SCORE!!!!
+    /* load the image into char block 0 (16 bits at a time) */
+//    dest = char_block(0);
+//    image = (unsigned short*) font_background_data;
+//    for (int i = 0; i < ((font_background_width * font_background_height) / 2); i++) {
+//        dest[i] = font_background_data[i];
+//    }
+//
+//    *bg2_control = 0 |
+//                   (0 << 2)  |
+//                   (0 << 6)  |
+//                   (1 << 7)  |
+//                   (18 << 8) |
+//                   (1 << 13) |
+//                   (0 << 14);
+//
+//    dest = screen_block(18);
+//    for (int i = 0; i < (numbers_width * numbers_height); i++) {
+//        dest[i] = numbers[i];
+//    }
 }
 
 /* DEPRECIATED */
@@ -526,6 +549,7 @@ int main() {
 #define SPRITE_ENABLE 0x1000
 #define SPRITE_MAP_1D 0x40
         /* we set the mode to mode 0 with bg0 on */
+        // TODO re-enable bg2 when fix is found for score!!!
         *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | SPRITE_ENABLE | SPRITE_MAP_1D;
         /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
         int game_started = 0;
