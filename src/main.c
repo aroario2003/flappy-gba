@@ -574,9 +574,20 @@ int main() {
 
 
 
+            int spriteMode = 0;
         /* loop forever */
         while (1) {
             //Kill switch 
+            if (counter%60 == 0){
+                if (spriteMode == 0){
+                    sprite_set_offset(theSprite, 8);
+                    spriteMode = 8;
+                }
+                else{
+                    sprite_set_offset(theSprite, 0);
+                    spriteMode = 0;
+                }
+            }
             if (button_pressed(BUTTON_SELECT) && game_ended == 0) {
                 *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
                 setup_endscreen();
