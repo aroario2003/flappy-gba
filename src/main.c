@@ -624,12 +624,14 @@ int main() {
            
             //TODO: Make bird move properly
         if (button_pressed(BUTTON_A)){
-            if ((theSprite->attribute0 & 0xff)-1 >= 0){
+            if ((theSprite->attribute0 & 0xff) > 0) {
                 sprite_move(theSprite, 0, -1);
                 bird->y = bird->y - 1; 
             }
-            else{
-            }
+        }
+        else if ((theSprite->attribute0 & 0xff) < 148) {
+            sprite_move(theSprite, 0, 1);
+            bird->y = bird->y + 1;
         }
         //Move Pipe 1
         sprite_move(sprite5, -1, 0);
