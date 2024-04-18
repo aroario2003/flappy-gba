@@ -704,7 +704,7 @@ int main() {
             }
             
             //Updates where the sprites are located
-            //sprite_update_all();
+            sprite_update_all();
             lastBackground = currentBackground;
             /* delay some */
             delay(50);
