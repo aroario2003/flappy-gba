@@ -698,6 +698,14 @@ int main() {
             game_in_progress = 0;
         }
 
+        // set up score after pipe is passed
+        // TODO remove this int score. use assembly. i don't have time to figure out how to rn.
+        // these may be -1 (so +13 and +11), but may need time to test (strategy: use OBS -> record screen -> use visualboyadvance -> make screen 240x160 (default) -> play the game and score in this case -> stop recording -> full screen VLC media player -> play video through VLC media player to go frame-by-frame (using E for next frame and F for full screen), then find exact frame score changes and screenshot location of sprite versus pipe (may take multiple attempts)
+        int score = 0;
+        if ((sprite5->attribute1 & 0x1ff+14 == spriteX+12) || (s1prite->attribute1 & 0x1ff+14 == spriteX+12)) {
+            score++;
+        }
+
 
             //Calls a function to update the bird's position on-screen 
             bird_update(bird);
