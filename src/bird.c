@@ -6,7 +6,7 @@
 void bird_init(Bird* bird) {
     // TODO: add and remove fields that are neccessary or unnecessary
     bird->x = 100;
-    bird->y = 113;
+    bird->y = 100;
     bird->border = 40;
     bird->frame = 0;
     bird->move = 0;

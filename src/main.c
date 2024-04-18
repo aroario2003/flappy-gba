@@ -18,6 +18,7 @@
 //#include "starting_screen.h"
 #include "end_screen_tiles.h"
 #include "end_game.h"
+#include "stdio.h"
 // #include "starting_screen2.h"
 /* the three tile modes */
 #define MODE0 0x00
@@ -293,6 +294,221 @@ void setup_endscreen() {
 
 }
 
+//int determine_conflict(int[] x_pixelConflicts, int[] y_pixelConflicts) {
+//    int loop = 0;
+//    while (loop < 60) {
+//
+//        loop++;
+//    }
+//}
+
+// return 1 if conflict, 0 if no conflict
+int get_borders_and_determine_conflict(int x, int y, int pipeNumber, int pipeX) {
+    // TODO uncomment (easiest on CLion) if high-speed conflict algorithm is found. using loop + pipeX double loop makes the game really slow when passing through a pipe...
+//    // create 2d array of pixel conflict locations for x
+//    int x_pixelConflicts[60];
+//    // create 2d array of pixel conflict locations for y
+//    int y_pixelConflicts[60];
+//    // create specific border pixel conflicts (one pixel outside the bird)
+//    // column 1/18 surrounding bird
+//    x_pixelConflicts[0] = x-1;
+//    y_pixelConflicts[0] = y+3;
+//    x_pixelConflicts[1] = x-1;
+//    y_pixelConflicts[1] = y+4;
+//    x_pixelConflicts[2] = x-1;
+//    y_pixelConflicts[2] = y+5;
+//    x_pixelConflicts[3] = x-1;
+//    y_pixelConflicts[3] = y+6;
+//    x_pixelConflicts[4] = x-1;
+//    y_pixelConflicts[4] = y+7;
+//    // column 2/18
+//    x_pixelConflicts[5] = x;
+//    y_pixelConflicts[5] = y+2;
+//    x_pixelConflicts[6] = x;
+//    y_pixelConflicts[6] = y+3;
+//    x_pixelConflicts[7] = x;
+//    y_pixelConflicts[7] = y+7;
+//    x_pixelConflicts[8] = x;
+//    y_pixelConflicts[8] = y+8;
+//    // column 3/18
+//    x_pixelConflicts[9] = x+1;
+//    y_pixelConflicts[9] = y+2;
+//    x_pixelConflicts[10] = x+1;
+//    y_pixelConflicts[10] = y+8;
+//    x_pixelConflicts[11] = x+1;
+//    y_pixelConflicts[11] = y+9;
+//    x_pixelConflicts[12] = x+1;
+//    y_pixelConflicts[12] = y+10;
+//    // column 4/18
+//    x_pixelConflicts[13] = x+2;
+//    y_pixelConflicts[13] = y+1;
+//    x_pixelConflicts[14] = x+2;
+//    y_pixelConflicts[14] = y+2;
+//    x_pixelConflicts[15] = x+2;
+//    y_pixelConflicts[15] = y+10;
+//    x_pixelConflicts[16] = x+2;
+//    y_pixelConflicts[16] = y+11;
+//    // column 5/18
+//    x_pixelConflicts[17] = x+3;
+//    y_pixelConflicts[17] = y;
+//    x_pixelConflicts[18] = x+3;
+//    y_pixelConflicts[18] = y+1;
+//    x_pixelConflicts[19] = x+3;
+//    y_pixelConflicts[19] = y+11;
+//    // column 6/18
+//    x_pixelConflicts[20] = x+4;
+//    y_pixelConflicts[20] = y;
+//    x_pixelConflicts[21] = x+4;
+//    y_pixelConflicts[21] = y+11;
+//    x_pixelConflicts[22] = x+4;
+//    y_pixelConflicts[22] = y+12;
+//    // column 7/18
+//    x_pixelConflicts[23] = x+5;
+//    y_pixelConflicts[23] = y-1;
+//    x_pixelConflicts[24] = x+5;
+//    y_pixelConflicts[24] = y;
+//    x_pixelConflicts[25] = x+5;
+//    y_pixelConflicts[25] = y+12;
+//    // column 8/18
+//    x_pixelConflicts[26] = x+6;
+//    y_pixelConflicts[26] = y-1;
+//    x_pixelConflicts[27] = x+6;
+//    y_pixelConflicts[27] = y+12;
+//    // column 9/18
+//    x_pixelConflicts[28] = x+7;
+//    y_pixelConflicts[28] = y-1;
+//    x_pixelConflicts[29] = x+7;
+//    y_pixelConflicts[29] = y+12;
+//    // column 10/18
+//    x_pixelConflicts[30] = x+8;
+//    y_pixelConflicts[30] = y-1;
+//    x_pixelConflicts[31] = x+8;
+//    y_pixelConflicts[31] = y+12;
+//    // column 11/18
+//    x_pixelConflicts[32] = x+9;
+//    y_pixelConflicts[32] = y-1;
+//    x_pixelConflicts[33] = x+9;
+//    y_pixelConflicts[33] = y+12;
+//    // column 12/18
+//    x_pixelConflicts[34] = x+10;
+//    y_pixelConflicts[34] = y-1;
+//    x_pixelConflicts[35] = x+10;
+//    y_pixelConflicts[35] = y+12;
+//    x_pixelConflicts[36] = x+10;
+//    y_pixelConflicts[36] = y+11;
+//    // column 13/18
+//    x_pixelConflicts[37] = x+11;
+//    y_pixelConflicts[37] = y-1;
+//    x_pixelConflicts[38] = x+11;
+//    y_pixelConflicts[38] = y+11;
+//    // column 14/18
+//    x_pixelConflicts[39] = x+12;
+//    y_pixelConflicts[39] = y-1;
+//    x_pixelConflicts[40] = x+12;
+//    y_pixelConflicts[40] = y;
+//    x_pixelConflicts[41] = x+12;
+//    y_pixelConflicts[41] = y+11;
+//    // column 15/18
+//    x_pixelConflicts[42] = x+13;
+//    y_pixelConflicts[42] = y;
+//    x_pixelConflicts[43] = x+13;
+//    y_pixelConflicts[43] = y+1;
+//    x_pixelConflicts[44] = x+13;
+//    y_pixelConflicts[44] = y+11;
+//    // column 16/18
+//    x_pixelConflicts[45] = x+14;
+//    y_pixelConflicts[45] = y+1;
+//    x_pixelConflicts[46] = x+14;
+//    y_pixelConflicts[46] = y+2;
+//    x_pixelConflicts[47] = x+14;
+//    y_pixelConflicts[47] = y+11;
+//    // column 17/18
+//    x_pixelConflicts[48] = x+15;
+//    y_pixelConflicts[48] = y+2;
+//    x_pixelConflicts[49] = x+15;
+//    y_pixelConflicts[49] = y+3;
+//    x_pixelConflicts[50] = x+15;
+//    y_pixelConflicts[50] = y+4;
+//    x_pixelConflicts[51] = x+15;
+//    y_pixelConflicts[51] = y+5;
+//    x_pixelConflicts[52] = x+15;
+//    y_pixelConflicts[52] = y+6;
+//    x_pixelConflicts[53] = x+15;
+//    y_pixelConflicts[53] = y+10;
+//    x_pixelConflicts[54] = x+15;
+//    y_pixelConflicts[54] = y+11;
+//    // column 18/18
+//    x_pixelConflicts[55] = x+16;
+//    y_pixelConflicts[55] = y+6;
+//    x_pixelConflicts[56] = x+16;
+//    y_pixelConflicts[56] = y+7;
+//    x_pixelConflicts[57] = x+16;
+//    y_pixelConflicts[57] = y+8;
+//    x_pixelConflicts[58] = x+16;
+//    y_pixelConflicts[58] = y+9;
+//    x_pixelConflicts[59] = x+16;
+//    y_pixelConflicts[59] = y+10;
+
+    if (pipeNumber == 1) {
+        // safezone: pixel Y 87 to pixel Y 118 (where edge of bird is not touching the pipe)
+        // no conflict cases
+        if (x+11 < pipeX || x > pipeX+13) {
+            return 0;
+        }
+        if (y >= 87 && y <= 118-11) {
+            return 0;
+        }
+        // TODO remove if too hard to implement
+        // possible conflict cases
+        // idea is to allow very tiny exceptions if parts of bird are safe
+//        int loop = 0;
+        // to loop through pixel conflict arrays
+//        while (loop < 60) {
+//            // to loop through pipe x's
+//            int maxPipeX = pipeX+13;
+//            while (pipeX < maxPipeX) {
+//                // if bird pixelConflicts borders are not in the safezone, bird dies
+//                if (x_pixelConflicts[loop] == pipeX && (y_pixelConflicts[loop] < 88 || y_pixelConflicts[loop] > 119)) {
+//                    return 1;
+//                }
+//                pipeX++;
+//            }
+//            loop++;
+//        }
+        // else bird is not safe
+        return 1;
+    }
+    else if (pipeNumber == 2) {
+        // safezone: pixel Y 47 to Pixel Y 78
+        // no conflict cases
+        if (x+11 < pipeX || x > pipeX+13) {
+            return 0;
+        }
+        if (y >= 47 && y <= 78-11) {
+            return 0;
+        }
+        // TODO remove if too hard to implement
+        // possible conflict cases
+        // idea is to allow very tiny exceptions if parts of bird are safe
+//        int loop = 0;
+//        // to loop through pixel conflict arrays
+//        while (loop < 60) {
+//            // to loop through pipe x's
+//            int maxPipeX = pipeX+13;
+//            while (pipeX < maxPipeX) {
+//                // if bird pixelConflicts borders are not in the safezone, bird dies
+//                if (x_pixelConflicts[loop] == pipeX && (y_pixelConflicts[loop] < 48 || y_pixelConflicts[loop] > 79)) {
+//                    return 1;
+//                }
+//                pipeX++;
+//            }
+//            loop++;
+//        }
+        // else bird is not safe
+        return 1;
+    }
+}
+
 
 /* the main function */
 int main() {
@@ -443,6 +659,19 @@ int main() {
         sprite_move(bsprite, -1, 0);
         sprite_move(csprite, -1, 0);
         sprite_move(dsprite, -1, 0);
+
+        // convert theSprite x and y to local variables
+        int spriteX = theSprite->attribute1 & 0x1ff;
+        int spriteY = theSprite->attribute0 & 0xff;
+        // get borders and determine conflict
+        if (get_borders_and_determine_conflict(spriteX, spriteY, 1, sprite5->attribute1 & 0x1ff) == 1
+        ||  get_borders_and_determine_conflict(spriteX, spriteY, 2, s1prite->attribute1 & 0x1ff) == 1) {
+            *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
+            setup_endscreen();
+            game_ended = 1;
+            game_in_progress = 0;
+        }
+
 
             //Calls a function to update the bird's position on-screen 
             bird_update(bird);
