@@ -408,7 +408,7 @@ int main() {
            
             //TODO: Make bird move properly
         if (button_pressed(BUTTON_A)){
-            if ((theSprite->attribute0 & 0xff)-1 >= 16){
+            if ((theSprite->attribute0 & 0xff)-1 >= 0){
                 sprite_move(theSprite, 0, -1);
                 bird->y = bird->y - 1; 
             }
