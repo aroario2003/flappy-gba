@@ -211,9 +211,9 @@ void setup_background(int mode) {
 
 void set_text(char* str, int row, int col) {
   /* find the index in the texmap to draw to */
-  int index = row * 117 + col;
+  int index = row * 32 + col;
   
-  int missing = 117;
+  int missing = 32;
 
   /* pointer to text map */
   volatile unsigned short* ptr = screen_block(18);
@@ -336,17 +336,15 @@ int main() {
 
   handle_start();
   /* we set the mode to mode 0 with bg0 on */
-  // TODO re-enable bg2 when fix is found for score!!!
   *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE |BG2_ENABLE | SPRITE_ENABLE | SPRITE_MAP_1D;
   /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
   int game_started = 0;
   int game_in_progress = 1;
   int game_ended = 0;
 	
-  Scores scores = {
-    .points = 0,
-    .coins = 0,
-  };
+  Scores* scores;
+  scores->points = 0;
+  scores->coins = 0;
   /* setup the background 0 */
   setup_background(0);
   //Will save the value of the last background. 
@@ -497,18 +495,16 @@ int main() {
     }
 
     // set up score after pipe is passed
-    int score = 0;
     if ((sprite5->attribute1 & 0x1ff+14 == spriteX+12) || (s1prite->attribute1 & 0x1ff+14 == spriteX+12)) {
-      bird->touched_portal = 1;
+      bird->touched_portal = 0;
+      scores->points = track_score(bird->touched_portal, scores->points);
+      char score_str[10];
+      sprintf(score_str, "%d", scores->points);
+      set_text(score_str, 10, WIDTH/2);
+    } else {
+        bird->touched_portal = 1;
+        scores->points = track_score(bird->touched_portal, scores->points);
     }
-
-    int touched_portal = bird->touched_portal;
-    track_score(touched_portal, scores.points);
-    //I have no idea how large this should be.
-    char score_str[10];
-    sprintf(score_str, "%d", scores.points);
-    set_text(score_str, WIDTH/2, 40);
-    bird->touched_portal = 0;
 
     //Calls a function to update the bird's position on-screen 
     bird_update(bird);
