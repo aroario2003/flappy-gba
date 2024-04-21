@@ -5,6 +5,7 @@
 #include "background_dusk.h"
 #include "map.h"
 #include "map2.h"
+#include "hud.h"
 // SCREEN_WIDTH and SCREEN_HEIGHT defined here (below)
 #include "game.h"
 #include "font.h"
@@ -41,6 +42,20 @@
 #define SPRITE_ENABLE 0x1000
 #define SPRITE_MAP_1D 0x40
 
+
+//These are the codes for the tiles. To be used to edit h files.
+//TODO: Set it so the tiles change with time. As of right now, it should be the first three positions in the array.
+
+#define TILE_0 0x0023
+#define TILE_1 0x0024
+#define TILE_2 0x0025
+#define TILE_3 0x0026
+#define TILE_4 0x0027
+#define TILE_5 0x0028
+#define TILE_6 0x0029
+#define TILE_7 0x002a
+#define TILE_8 0x002b
+#define TILE_9 0x002c
 /* the control registers for the four tile layers */
 volatile unsigned short* screen = (volatile unsigned short*) 0x6000000;
 volatile unsigned short* bg0_control = (volatile unsigned short*) 0x4000008;
@@ -189,8 +204,8 @@ void setup_background(int mode) {
     (0 << 14);
 
   dest = screen_block(18);
-  for (int i = 0; i < (numbers_width * numbers_height); i++) {
-    dest[i] = numbers[i];
+  for (int i = 0; i < (map_width * map_height); i++) {
+    dest[i] = hud[i];
   }
 }
 
@@ -322,7 +337,7 @@ int main() {
   handle_start();
   /* we set the mode to mode 0 with bg0 on */
   // TODO re-enable bg2 when fix is found for score!!!
-  *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | SPRITE_ENABLE | SPRITE_MAP_1D;
+  *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE |BG2_ENABLE | SPRITE_ENABLE | SPRITE_MAP_1D;
   /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
   int game_started = 0;
   int game_in_progress = 1;
@@ -489,7 +504,8 @@ int main() {
 
     int touched_portal = bird->touched_portal;
     track_score(touched_portal, scores.points);
-    char* score_str;
+    //I have no idea how large this should be.
+    char score_str[10];
     sprintf(score_str, "%d", scores.points);
     set_text(score_str, WIDTH/2, 40);
     bird->touched_portal = 0;
