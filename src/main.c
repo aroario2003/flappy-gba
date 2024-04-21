@@ -1,3 +1,6 @@
+
+//#include "taptapextended.h"
+//#include "taptap.h"
 //#include "player.h"
 #include "flappin.h"
 #include "background.h"
@@ -102,6 +105,94 @@ volatile short* bg3_y_scroll = (unsigned short*) 0x400001e;
 /* the scanline counter is a memory cell which is updated to indicate how
  * much of the screen has been drawn */
 volatile unsigned short* scanline_counter = (volatile unsigned short*) 0x4000006;
+
+/* define the timer control registers */
+volatile unsigned short* timer0_data = (volatile unsigned short*) 0x4000100;
+volatile unsigned short* timer0_control = (volatile unsigned short*) 0x4000102;
+
+/* make defines for the bit positions of the control register */
+#define TIMER_FREQ_1 0x0
+#define TIMER_FREQ_64 0x2
+#define TIMER_FREQ_256 0x3
+#define TIMER_FREQ_1024 0x4
+#define TIMER_ENABLE 0x80
+
+/* the GBA clock speed is fixed at this rate */
+#define CLOCK 16777216
+#define CYCLES_PER_BLANK 280806
+
+/* turn DMA on for different sizes */
+#define DMA_ENABLE 0x80000000
+#define DMA_16 0x00000000
+#define DMA_32 0x04000000
+
+/* this causes the DMA destination to be the same each time rather than increment */
+#define DMA_DEST_FIXED 0x400000
+
+/* this causes the DMA to repeat the transfer automatically on some interval */
+#define DMA_REPEAT 0x2000000
+
+/* this causes the DMA repeat interval to be synced with timer 0 */
+#define DMA_SYNC_TO_TIMER 0x30000000
+
+/* pointers to the DMA source/dest locations and control registers */
+volatile unsigned int* dma1_source = (volatile unsigned int*) 0x40000BC;
+volatile unsigned int* dma1_destination = (volatile unsigned int*) 0x40000C0;
+volatile unsigned int* dma1_control = (volatile unsigned int*) 0x40000C4;
+
+volatile unsigned int* dma2_source = (volatile unsigned int*) 0x40000C8;
+volatile unsigned int* dma2_destination = (volatile unsigned int*) 0x40000CC;
+volatile unsigned int* dma2_control = (volatile unsigned int*) 0x40000D0;
+
+volatile unsigned int* dma3_source = (volatile unsigned int*) 0x40000D4;
+volatile unsigned int* dma3_destination = (volatile unsigned int*) 0x40000D8;
+volatile unsigned int* dma3_control = (volatile unsigned int*) 0x40000DC;
+
+
+/* the global interrupt enable register */
+volatile unsigned short* interrupt_enable = (unsigned short*) 0x4000208;
+
+/* this register stores the individual interrupts we want */
+volatile unsigned short* interrupt_selection = (unsigned short*) 0x4000200;
+
+/* this registers stores which interrupts if any occured */
+volatile unsigned short* interrupt_state = (unsigned short*) 0x4000202;
+
+/* the address of the function to call when an interrupt occurs */
+volatile unsigned int* interrupt_callback = (unsigned int*) 0x3007FFC;
+
+/* this register needs a bit set to tell the hardware to send the vblank interrupt */
+volatile unsigned short* display_interrupts = (unsigned short*) 0x4000004;
+
+/* the interrupts are identified by number, we only care about this one */
+#define INTERRUPT_VBLANK 0x1
+
+/* allows turning on and off sound for the GBA altogether */
+volatile unsigned short* master_sound = (volatile unsigned short*) 0x4000084;
+#define SOUND_MASTER_ENABLE 0x80
+#define SOUND_MASTER_DISABLE (~SOUND_MASTER_ENABLE)
+
+/* has various bits for controlling the direct sound channels */
+volatile unsigned short* sound_control = (volatile unsigned short*) 0x4000082;
+
+/* bit patterns for the sound control register */
+#define SOUND_A_RIGHT_CHANNEL 0x100
+#define SOUND_A_LEFT_CHANNEL 0x200
+#define SOUND_A_FIFO_RESET 0x800
+#define SOUND_B_RIGHT_CHANNEL 0x1000
+#define SOUND_B_LEFT_CHANNEL 0x2000
+#define SOUND_B_FIFO_RESET 0x8000
+
+/* the location of where sound samples are placed for each channel */
+volatile unsigned char* fifo_buffer_a  = (volatile unsigned char*) 0x40000A0;
+volatile unsigned char* fifo_buffer_b  = (volatile unsigned char*) 0x40000A4;
+
+/* global variables to keep track of how much longer the sounds are to play */
+unsigned int channel_a_vblanks_remaining = 0;
+unsigned int channel_a_total_vblanks = 0;
+unsigned int channel_b_vblanks_remaining = 0;
+
+
 
 /* wait for the screen to be fully drawn so we can do something during vblank */
 void wait_vblank() {
@@ -241,7 +332,6 @@ void put_pixel_m3(int row, int col, unsigned short color) {
 
 void handle_start() {
   while(!button_pressed(BUTTON_START)) {}
-  setup_background(0);
 
 }
 //Creates a pipe.
@@ -322,6 +412,77 @@ int get_borders_and_determine_conflict(int x, int y, int pipeNumber, int pipeX) 
   }
 }
 
+/*
+void play_sound(const signed char* sound, int total_samples, int sample_rate, char channel) {
+    *timer0_control = 0;
+    if (channel == 'A') {
+        *dma1_control = 0;
+    } else if (channel == 'B') {
+        *dma2_control = 0;
+    }
+
+    if (channel == 'A') {
+        *sound_control |= SOUND_A_RIGHT_CHANNEL | SOUND_A_LEFT_CHANNEL | SOUND_A_FIFO_RESET;
+    } else if (channel == 'B') {
+        *sound_control |= SOUND_B_RIGHT_CHANNEL | SOUND_B_LEFT_CHANNEL | SOUND_B_FIFO_RESET;
+    }
+
+    *master_sound = SOUND_MASTER_ENABLE;
+
+    if (channel == 'A') {
+        *dma1_source = (unsigned int) sound;
+        *dma1_destination = (unsigned int) fifo_buffer_a;
+        *dma1_control = DMA_DEST_FIXED | DMA_REPEAT | DMA_32 | DMA_SYNC_TO_TIMER | DMA_ENABLE;
+    } else if (channel == 'B') {
+        *dma2_source = (unsigned int) sound;
+        *dma2_destination = (unsigned int) fifo_buffer_b;
+        *dma2_control = DMA_DEST_FIXED | DMA_REPEAT | DMA_32 | DMA_SYNC_TO_TIMER | DMA_ENABLE;
+    }
+
+    unsigned short ticks_per_sample = CLOCK / sample_rate;
+
+    *timer0_data = 65536 - ticks_per_sample;
+
+    if (channel == 'A') {
+        channel_a_vblanks_remaining = total_samples * ticks_per_sample * (1.0 / CYCLES_PER_BLANK);
+        channel_a_total_vblanks = channel_a_vblanks_remaining;
+    } else if (channel == 'B') {
+        channel_b_vblanks_remaining = total_samples * ticks_per_sample * (1.0 / CYCLES_PER_BLANK);
+    }
+
+    *timer0_control = TIMER_ENABLE | TIMER_FREQ_1;
+}
+
+void on_vblank() {
+    *interrupt_enable = 0;
+    unsigned short temp = *interrupt_state;
+
+    if ((*interrupt_state & INTERRUPT_VBLANK) == INTERRUPT_VBLANK) {
+
+        if (channel_a_vblanks_remaining == 0) {
+            channel_a_vblanks_remaining = channel_a_total_vblanks;
+            *dma1_control = 0;
+            *dma1_source = (unsigned int) taptap;
+            *dma1_control = DMA_DEST_FIXED | DMA_REPEAT | DMA_32 |
+                DMA_SYNC_TO_TIMER | DMA_ENABLE;
+        } else {
+            channel_a_vblanks_remaining--;
+        }
+
+        if (channel_b_vblanks_remaining == 0) {
+            *sound_control &= ~(SOUND_B_RIGHT_CHANNEL | SOUND_B_LEFT_CHANNEL | SOUND_B_FIFO_RESET);
+            *dma2_control = 0;
+        }
+        else {
+            channel_b_vblanks_remaining--;
+        }
+    }
+
+    *interrupt_state = temp;
+    *interrupt_enable = 1;
+}
+*/
+
 
 /* the main function */
 int main() {
@@ -345,6 +506,8 @@ int main() {
   Scores* scores;
   scores->points = 0;
   scores->coins = 0;
+  
+  *sound_control=0;
   /* setup the background 0 */
   setup_background(0);
   //Will save the value of the last background. 
@@ -415,6 +578,8 @@ int main() {
   dsprite = sprite_init(0, 0, SIZE_16_16, 0, 0, 64, 0);
 
   int spriteMode = 0;
+  //play_sound(taptap, taptap_bytes, 16000, 'A');
+
   /* loop forever */
   while (1) {
     //Kill switch 
@@ -518,6 +683,7 @@ int main() {
 
     /* wait for vblank before scrolling */
     wait_vblank();
+    //on_vblank();
     *bg0_x_scroll = xscroll;
     //*bg0_y_scroll = yscroll;
     *bg1_x_scroll = xscroll * 2;
