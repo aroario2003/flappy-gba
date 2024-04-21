@@ -279,13 +279,20 @@ void setup_background(int mode) {
   for (int i = 0; i < (map_width * map_height); i++) {
     dest[i] = map2[i];
   }
+   *bg2_control = 0 |
+    (1 << 2)  |
+   (0 << 6)  |
+  (1 << 7)  |
+  (18 << 8) |
+    (1 << 13) |
+  (0 << 14);
 
   dest = char_block(1);
   image = (unsigned short*) background_dusk_data;
   for (int i = 0; i < ((background_dusk_width * background_dusk_height) / 2); i++) {
-    dest[i] = background_dusk_data[i];
+    dest[i] = hud[i];
   }
-
+/*
   *bg2_control = 0 |
     (1 << 2)  |
     (0 << 6)  |
@@ -293,11 +300,11 @@ void setup_background(int mode) {
     (18 << 8) |
     (1 << 13) |
     (0 << 14);
-
-  dest = screen_block(24);
-  for (int i = 0; i < 32 * 32; i++) {
-      dest[i] = 1;
-  }
+*/
+//  dest = screen_block(24);
+//  for (int i = 0; i < 32 * 32; i++) {
+//      dest[i] = 1;
+//  }
 }
 
 void set_text(char* str, int row, int col) {
@@ -497,7 +504,7 @@ int main() {
 
   handle_start();
   /* we set the mode to mode 0 with bg0 on */
-  *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE |BG2_ENABLE | SPRITE_ENABLE | SPRITE_MAP_1D;
+  *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | SPRITE_ENABLE | SPRITE_MAP_1D;
   /* store ints if game has started or is in progress or has ended. 0 = false, 1 = true */
   int game_started = 0;
   int game_in_progress = 1;
@@ -509,7 +516,7 @@ int main() {
   
   *sound_control=0;
   /* setup the background 0 */
-  setup_background(0);
+  setup_background(1);
   //Will save the value of the last background. 
   //Used to change if the background changes in-game.
   int lastBackground = 1;
@@ -577,6 +584,14 @@ int main() {
   csprite = sprite_init(0, 30, SIZE_16_16, 0, 0, 64, 0);
   dsprite = sprite_init(0, 0, SIZE_16_16, 0, 0, 64, 0);
 
+  Sprite* coin2;
+     coin2 = sprite_init(0, 50, SIZE_16_16, 0, 0, 80, 0);
+     int coin2Positiony;
+     int coin2Positionx=HEIGHT;
+  Sprite* coin;
+     coin = sprite_init(WIDTH, 90, SIZE_16_16, 0, 0, 80, 0);
+     int coinPositiony=WIDTH;
+     int coinPositionx=HEIGHT;
   int spriteMode = 0;
   //play_sound(taptap, taptap_bytes, 16000, 'A');
 
@@ -618,6 +633,9 @@ int main() {
       sprite_move(theSprite, 0, 1);
       bird->y = bird->y + 1;
     }
+
+    sprite_move(coin, -1, 0);
+    sprite_move(coin2, -1, 0);
     //Move Pipe 1
     sprite_move(sprite5, -1, 0);
     sprite_move(sprite6, -1, 0);
@@ -688,13 +706,13 @@ int main() {
     *bg1_x_scroll = xscroll * 2;
     //*bg1_y_scroll = yscroll*2;
     if (counter == 1){
-        currentBackground=0;
+   //     currentBackground=0;
     }
     if (counter == 2){
-      currentBackground = 1;
+     // currentBackground = 1;
     }
     else if (counter == 2000){
-      currentBackground = 2;
+     // currentBackground = 2;
     }
 
     //relaods the background if you try to change it
