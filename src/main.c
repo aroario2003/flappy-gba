@@ -349,8 +349,8 @@ int main() {
   setup_background(0);
   //Will save the value of the last background. 
   //Used to change if the background changes in-game.
-  int lastBackground = 0;
-  int currentBackground = 0;
+  int lastBackground = 1;
+  int currentBackground =1;
   /* set initial scroll to 0 */
   int xscroll = 0;
   int yscroll = 0;
@@ -522,7 +522,10 @@ int main() {
     //*bg0_y_scroll = yscroll;
     *bg1_x_scroll = xscroll * 2;
     //*bg1_y_scroll = yscroll*2;
-    if (counter == 1000){
+    if (counter == 1){
+        currentBackground=0;
+    }
+    if (counter == 2){
       currentBackground = 1;
     }
     else if (counter == 2000){
