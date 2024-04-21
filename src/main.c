@@ -280,23 +280,23 @@ void setup_background(int mode) {
     dest[i] = map2[i];
   }
 
-  /* dest = char_block(0); */
-  /* image = (unsigned short*) font_background_data; */
-  /* for (int i = 0; i < ((font_background_width * font_background_height) / 2); i++) { */
-  /*   dest[i] = font_background_data[i]; */
-  /* } */
+  dest = char_block(1);
+  image = (unsigned short*) background_dusk_data;
+  for (int i = 0; i < ((background_dusk_width * background_dusk_height) / 2); i++) {
+    dest[i] = background_dusk_data[i];
+  }
 
   *bg2_control = 0 |
-    (0 << 2)  |
+    (1 << 2)  |
     (0 << 6)  |
     (1 << 7)  |
     (18 << 8) |
     (1 << 13) |
     (0 << 14);
 
-  dest = screen_block(18);
-  for (int i = 0; i < (map_width * map_height); i++) {
-    dest[i] = hud[i];
+  dest = screen_block(24);
+  for (int i = 0; i < 32 * 32; i++) {
+      dest[i] = 1;
   }
 }
 
@@ -307,7 +307,7 @@ void set_text(char* str, int row, int col) {
   int missing = 32;
 
   /* pointer to text map */
-  volatile unsigned short* ptr = screen_block(18);
+  volatile unsigned short* ptr = screen_block(24);
 
   /* for each character */
   while (*str) {
@@ -665,7 +665,6 @@ int main() {
       scores->points = track_score(bird->touched_portal, scores->points);
       char score_str[10];
       sprintf(score_str, "%d", scores->points);
-      set_text(score_str, 10, WIDTH/2);
     } else {
         bird->touched_portal = 1;
         scores->points = track_score(bird->touched_portal, scores->points);
