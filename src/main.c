@@ -719,7 +719,6 @@ int main() {
     // test coin borders
     if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 1, coin->attribute1 & 0x1ff) == 1
     || get_coin_borders_and_determine_conflict(spriteX, spriteY, 2, coin2->attribute1 & 0x1ff) == 1) {
-        *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
 	bird->coin_collected = 1;
 	scores->coins = track_coins(bird->coin_collected, scores->coins);
     }
