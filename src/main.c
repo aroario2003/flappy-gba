@@ -76,22 +76,6 @@ volatile unsigned short* bg3_control = (volatile unsigned short*) 0x400000e;
 #define DMA_16 0x00000000
 #define DMA_32 0x04000000
 
-/* pointer to the DMA source location */
-volatile unsigned int* dma_source = (volatile unsigned int*) 0x40000D4;
-
-/* pointer to the DMA destination location */
-volatile unsigned int* dma_destination = (volatile unsigned int*) 0x40000D8;
-
-/* pointer to the DMA count/control */
-volatile unsigned int* dma_count = (volatile unsigned int*) 0x40000DC;
-
-/* copy data using DMA */
-void memcpy16_dma(unsigned short* dest, unsigned short* source, int amount) {
-    *dma_source = (unsigned int) source;
-    *dma_destination = (unsigned int) dest;
-    *dma_count = amount | DMA_16 | DMA_ENABLE;
-}
-
 /* the display control pointer points to the gba graphics register */
 volatile unsigned long* display_control = (volatile unsigned long*) 0x4000000;
 
