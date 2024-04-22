@@ -404,12 +404,19 @@ void setup_endscreen() {
 }
 
 void setup_score_endscreen(char* score_str, char* coin_str) {
-    /* load the palette from the image into palette memory*/
-    memcpy16_dma((unsigned short*) bg_palette, (unsigned short*) background_palette, PALETTE_SIZE);
+    // undoing changes for memcpy to due warning implicit declartation of function 'memcpy16_dma' before
+  volatile unsigned short* dest = char_block(0);
 
-    /* load the image into char block 0 */
-    memcpy16_dma((unsigned short*) char_block(0), (unsigned short*) background_data,
-                 (background_width * background_height) / 2);
+  /* works somewhat */
+  unsigned short* image = (unsigned short*) font_background_data;
+  for (int i = 0; i < ((font_background_width * font_background_height) / 2); i++) {
+    dest[i] = image[i];
+  }
+
+  /* load palette supporting background and ending screen */
+  for (int i = 0; i < PALETTE_SIZE; i++) {
+    bg_palette[i] = font_background_palette[i];
+  }
 
     /* bg0 is just all black so the pink does not show through! */
     *bg0_control = 3 |    /* priority, 0 is highest, 3 is lowest */
