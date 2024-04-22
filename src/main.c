@@ -512,7 +512,13 @@ void on_vblank() {
 }
 */
 
-
+void remove_sprite(Sprite *sprite){
+    //Attempts to shift to minimum priority
+    sprite->attribute2 = 3 << 10;
+    sprite ->attribute0 = 0;
+    sprite -> attribute1 = 0;
+    
+}
 /* the main function */
 int main() {
   *display_control = MODE3 | BG2;
@@ -616,7 +622,6 @@ int main() {
      int coinPositionx=HEIGHT;
   int spriteMode = 0;
   //play_sound(taptap, taptap_bytes, 16000, 'A');
-
   /* loop forever */
   while (1) {
     //Kill switch 
