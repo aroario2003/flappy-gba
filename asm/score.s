@@ -7,6 +7,7 @@ track_score:
 	bne .zero_score		@ if they have make their score zero
 .update_score:
 	add r1, r1, #1		@ add 1 to the points
+	b .done_score
 .zero_score:
 	mov r1, #0		@ make the players score 0
 .done_score:

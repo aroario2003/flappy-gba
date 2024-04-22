@@ -594,10 +594,9 @@ int main() {
     int game_started = 0;
     int game_in_progress = 1;
     int game_ended = 0;
-
-    Scores* scores;
-    scores->points = 0;
-    scores->coins = 0;
+    
+    int points = 0;
+    int coins = 0;
 
     *sound_control=0;
     /* setup the background 0 */
@@ -696,8 +695,8 @@ int main() {
             *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
             char score_str[100];
             char coin_str[100];
-            sprintf(score_str, "you got %d points", scores->points);
-            sprintf(coin_str, "you got %d coins", scores->coins);
+            sprintf(score_str, "you got %d points", points);
+            sprintf(coin_str, "you got %d coins", coins);
             setup_score_endscreen(score_str, coin_str);
             game_ended = 1;
             game_in_progress = 0;
@@ -762,11 +761,11 @@ int main() {
             *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE;
             char score_str[100];
             char coin_str[100];
-            sprintf(score_str, "you got %d points", scores->points);
-            sprintf(coin_str, "you got %d coins", scores->coins);
+            sprintf(score_str, "you got %d points", points);
+            sprintf(coin_str, "you got %d coins", coins);
             setup_score_endscreen(score_str, coin_str);
-            set_text("hello world", HEIGHT/2, WIDTH/2);
-            set_text(coin_str, HEIGHT/2 + 2, WIDTH/2);
+            set_text(score_str, 0, WIDTH/2);
+            set_text(coin_str, 2, WIDTH/2);
             game_ended = 1;
             game_in_progress = 0;
         }
@@ -774,10 +773,10 @@ int main() {
         // set up score after pipe is passed
         if ((sprite5->attribute1 & 0x1ff+14 == spriteX+12) || (s1prite->attribute1 & 0x1ff+14 == spriteX+12)) {
             bird->touched_portal = 0;
-            scores->points = track_score(bird->touched_portal, scores->points);
+            points = track_score(bird->touched_portal, points);
         } else {
             bird->touched_portal = 1;
-            scores->points = track_score(bird->touched_portal, scores->points);
+	     
         }
 
         // test coin borders
@@ -785,12 +784,12 @@ int main() {
             remove_sprite(coin);
             //Call it on the coin it has passed.
             bird->coin_collected = 1;
-            scores->coins = track_coins(bird->coin_collected, scores->coins);
+            coins = track_coins(bird->coin_collected, coins);
         }
         else if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 2, coin2->attribute1 & 0x1ff) == 1) {
             remove_sprite(coin2);
             bird->coin_collected = 1;
-            scores->coins = track_coins(bird->coin_collected, scores->coins);
+            coins = track_coins(bird->coin_collected, coins);
         }
         //Calls a function to update the bird's position on-screen
         bird_update(bird);
