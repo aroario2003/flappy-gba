@@ -783,15 +783,19 @@ int main() {
 
         // test coin borders
         if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 1, coin->attribute1 & 0x1ff) == 1) {
-            remove_sprite(coin);
-            //Call it on the coin it has passed.
-            bird->coin_collected = 1;
-            coins = track_coins(bird->coin_collected, coins);
+            if (coin->attribute0 & 0xff != 0) {
+                remove_sprite(coin);
+                //Call it on the coin it has passed.
+                bird->coin_collected = 1;
+                coins = track_coins(bird->coin_collected, coins);
+            }
         }
         else if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 2, coin2->attribute1 & 0x1ff) == 1) {
-            remove_sprite(coin2);
-            bird->coin_collected = 1;
-            coins = track_coins(bird->coin_collected, coins);
+            if (coin2->attribute0 & 0xff != 0) {
+                remove_sprite(coin2);
+                bird->coin_collected = 1;
+                coins = track_coins(bird->coin_collected, coins);
+            }
         }
         //Calls a function to update the bird's position on-screen
         bird_update(bird);
