@@ -279,32 +279,6 @@ void setup_background(int mode) {
   for (int i = 0; i < (map_width * map_height); i++) {
     dest[i] = map2[i];
   }
-  /*  *bg2_control = 0 | */
-  /*   (1 << 2)  | */
-  /*  (0 << 6)  | */
-  /* (1 << 7)  | */
-  /* (18 << 8) | */
-  /*   (1 << 13) | */
-  /* (0 << 14); */
-
-  /* dest = char_block(1); */
-  /* image = (unsigned short*) background_dusk_data; */
-  /* for (int i = 0; i < ((background_dusk_width * background_dusk_height) / 2); i++) { */
-  /*   dest[i] = hud[i]; */
-  /* } */
-/*
-  *bg2_control = 0 |
-    (1 << 2)  |
-    (0 << 6)  |
-    (1 << 7)  |
-    (18 << 8) |
-    (1 << 13) |
-    (0 << 14);
-*/
-//  dest = screen_block(24);
-//  for (int i = 0; i < 32 * 32; i++) {
-//      dest[i] = 1;
-//  }
 }
 
 void set_text(char* str, int row, int col) {
@@ -381,7 +355,7 @@ void setup_endscreen() {
     (0 << 2)  |
     (0 << 6)  |
     (1 << 7)  |
-    (19 << 8) |
+    (18 << 8) |
     (1 << 13) |
     (0 << 14);
 
@@ -556,13 +530,7 @@ void on_vblank() {
 }
 */
 
-void remove_sprite(Sprite *sprite){
-    //Attempts to shift to minimum priority
-    sprite->attribute2 = 3 << 10;
-    sprite ->attribute0 = 0;
-    sprite -> attribute1 = 0;
-    
-}
+
 /* the main function */
 int main() {
   *display_control = MODE3 | BG2;
@@ -666,6 +634,7 @@ int main() {
      int coinPositionx=HEIGHT;
   int spriteMode = 0;
   //play_sound(taptap, taptap_bytes, 16000, 'A');
+
   /* loop forever */
   while (1) {
     //Kill switch 
@@ -752,7 +721,7 @@ int main() {
       sprintf(score_str, "you got %d points", scores->points);
       sprintf(coin_str, "you got %d coins", scores->coins);
       setup_score_endscreen(score_str, coin_str);
-      set_text("hello world", HEIGHT/2, WIDTH/2); 
+      set_text(score_str, HEIGHT/2, WIDTH/2); 
       set_text(coin_str, HEIGHT/2 + 2, WIDTH/2); 
       game_ended = 1;
       game_in_progress = 0;
@@ -768,17 +737,12 @@ int main() {
     }
 
     // test coin borders
-    if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 1, coin->attribute1 & 0x1ff) == 1) {
-    remove_sprite(coin);
-    //Call it on the coin it has passed.
+    if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 1, coin->attribute1 & 0x1ff) == 1
+    || get_coin_borders_and_determine_conflict(spriteX, spriteY, 2, coin2->attribute1 & 0x1ff) == 1) {
 	bird->coin_collected = 1;
 	scores->coins = track_coins(bird->coin_collected, scores->coins);
     }
-    else if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 2, coin2->attribute1 & 0x1ff) == 1) {
-    remove_sprite(coin2);
-    bird->coin_collected = 1;
-    scores->coins = track_coins(bird->coin_collected, scores->coins);
-    }
+
     //Calls a function to update the bird's position on-screen 
     bird_update(bird);
     //Increment counter.
