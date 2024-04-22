@@ -422,26 +422,20 @@ int get_borders_and_determine_conflict(int x, int y, int pipeNumber, int pipeX) 
 // return 1 if conflict, 0 if no conflict
 int get_coin_borders_and_determine_conflict(int x, int y, int coinNumber, int coinX) {
     if (coinNumber == 1) {
-        // safezone: pixel Y 90 to pixel Y 101 (where edge of bird touches coin)
-        // no conflict cases
-        if (x+11 <= coinX+3 || x >= coinX+13) {
-            return 0;
+        // deathzone: pixel Y 78 to pixel Y 102 (where edge of bird touches coin)
+        // conflict case
+        if (y >= 78 && y <= 102 && x >= coinX-14 && x <= coinX+14) {
+            return 1;
         }
-        if (y >= 90 && y <= 101) {
-            return 0;
-        }
-        return 1;
+        return 0;
     }
     else if (coinNumber == 2) {
-        // safezone: pixel Y 50 to Pixel Y 61
-        // no conflict cases
-        if (x+11 <= coinX+3 || x >= coinX+13) {
-            return 0;
+        // deathzone: pixel Y 38 to pixel Y 62 (where edge of bird touches coin)
+        // conflict case
+        if (y >= 38 && y <= 62 && x >= coinX-14 && x <= coinX+14) {
+            return 1;
         }
-        if (y >= 50 && y <= 61) {
-            return 0;
-        }
-        return 1;
+        return 0;
     }
 }
 
@@ -713,7 +707,7 @@ int main() {
         bird->touched_portal = 1;
         scores->points = track_score(bird->touched_portal, scores->points);
     }
-    
+
     // test coin borders
     if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 1, coin->attribute1 & 0x1ff) == 1
     || get_coin_borders_and_determine_conflict(spriteX, spriteY, 2, coin2->attribute1 & 0x1ff) == 1) {
