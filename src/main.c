@@ -314,7 +314,7 @@ void setup_background(int mode) {
 //  for (int i = 0; i < 32 * 32; i++) {
 //      dest[i] = 1;
 //  }
-=======
+
   /* load the image into char block 0 (16 bits at a time) */
   volatile unsigned short* dest = char_block(0);
   unsigned short* image = (unsigned short*) background_data;
@@ -434,7 +434,7 @@ void setup_endscreen() {
     for (int i = 0; i < (end_game_width * end_game_height); i++) {
         dest[i] = end_game[i];
     }
-=======
+
   *bg2_control = 0 |
     (0 << 2)  |
     (0 << 6)  |
@@ -611,7 +611,7 @@ void remove_sprite(Sprite *sprite){
     sprite -> attribute1 = 0;
 
 }
-=======
+
 
 /* the main function */
 int main() {
@@ -691,7 +691,7 @@ int main() {
     Sprite* bsprite;
     Sprite* csprite;
     Sprite* dsprite;
-=======
+
   Sprite* coin2;
      coin2 = sprite_init(0, 50, SIZE_16_16, 0, 0, 80, 0);
      int coin2Positiony;
@@ -812,7 +812,7 @@ int main() {
             sprite_move(theSprite, 0, 1);
             bird->y = bird->y + 1;
         }
-=======
+
     // convert theSprite x and y to local variables
     int spriteX = theSprite->attribute1 & 0x1ff;
     int spriteY = theSprite->attribute0 & 0xff;
@@ -862,7 +862,7 @@ int main() {
         sprite_move(bsprite, -1, 0);
         sprite_move(csprite, -1, 0);
         sprite_move(dsprite, -1, 0);
-=======
+
     // test coin borders
     if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 1, coin->attribute1 & 0x1ff) == 1
     || get_coin_borders_and_determine_conflict(spriteX, spriteY, 2, coin2->attribute1 & 0x1ff) == 1) {
