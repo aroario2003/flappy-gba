@@ -279,19 +279,19 @@ void setup_background(int mode) {
   for (int i = 0; i < (map_width * map_height); i++) {
     dest[i] = map2[i];
   }
-   *bg2_control = 0 |
-    (1 << 2)  |
-   (0 << 6)  |
-  (1 << 7)  |
-  (18 << 8) |
-    (1 << 13) |
-  (0 << 14);
+  /*  *bg2_control = 0 | */
+  /*   (1 << 2)  | */
+  /*  (0 << 6)  | */
+  /* (1 << 7)  | */
+  /* (18 << 8) | */
+  /*   (1 << 13) | */
+  /* (0 << 14); */
 
-  dest = char_block(1);
-  image = (unsigned short*) background_dusk_data;
-  for (int i = 0; i < ((background_dusk_width * background_dusk_height) / 2); i++) {
-    dest[i] = hud[i];
-  }
+  /* dest = char_block(1); */
+  /* image = (unsigned short*) background_dusk_data; */
+  /* for (int i = 0; i < ((background_dusk_width * background_dusk_height) / 2); i++) { */
+  /*   dest[i] = hud[i]; */
+  /* } */
 /*
   *bg2_control = 0 |
     (1 << 2)  |
@@ -314,7 +314,7 @@ void set_text(char* str, int row, int col) {
   int missing = 32;
 
   /* pointer to text map */
-  volatile unsigned short* ptr = screen_block(24);
+  volatile unsigned short* ptr = screen_block(19);
 
   /* for each character */
   while (*str) {
@@ -363,7 +363,7 @@ int pipe_collisions(Pipe* pipe, Bird* bird){
   int pipeLocationBottom = pipe->y-8;
 }
 
-void setup_endscreen(char* score_str, char* coin_str) {
+void setup_endscreen() {
   volatile unsigned short* dest = char_block(0);
 
   /* works somewhat */
@@ -381,7 +381,7 @@ void setup_endscreen(char* score_str, char* coin_str) {
     (0 << 2)  |
     (0 << 6)  |
     (1 << 7)  |
-    (18 << 8) |
+    (19 << 8) |
     (1 << 13) |
     (0 << 14);
 
@@ -390,7 +390,51 @@ void setup_endscreen(char* score_str, char* coin_str) {
   for (int i = 0; i < (end_game_width * end_game_height); i++) {
     dest[i] = end_game[i];
   }
+  
+}
 
+void setup_score_endscreen(char* score_str, char* coin_str) {
+  volatile unsigned short* dest = char_block(0);
+
+  /* works somewhat */
+  unsigned short* image = (unsigned short*) font_background_data;
+  for (int i = 0; i < ((font_background_width * font_background_height) / 2); i++) {
+    dest[i] = image[i];
+  }
+
+  /* load palette supporting background and ending screen */
+  for (int i = 0; i < PALETTE_SIZE; i++) {
+    bg_palette[i] = font_background_palette[i];
+  }
+
+  *bg0_control = 3 |
+    (0 << 2)  |
+    (0 << 6)  |
+    (1 << 7)  |
+    (18 << 8) |
+    (1 << 13) |
+    (0 << 14);
+  
+
+  *bg1_control = 0 |
+    (0 << 2)  |
+    (0 << 6)  |
+    (1 << 7)  |
+    (19 << 8) |
+    (1 << 13) |
+    (0 << 14);
+
+  /* load the tile data into screen block 18 */
+  dest = screen_block(18);
+  for (int i = 0; i < (32 * 32); i++) {
+    dest[i] = 95;
+  }
+  
+  /* load the tile data into screen block 18 */
+  dest = screen_block(19);
+  for (int i = 0; i < (32 * 32); i++) {
+    dest[i] = 0;
+  }
 }
 
 // return 1 if conflict, 0 if no conflict
@@ -636,7 +680,7 @@ int main() {
       char coin_str[100];
       sprintf(score_str, "you got %d points", scores->points);
       sprintf(coin_str, "you got %d coins", scores->coins);
-      setup_endscreen(score_str, coin_str);
+      setup_score_endscreen(score_str, coin_str);
       game_ended = 1;
       game_in_progress = 0;
     }
@@ -697,12 +741,14 @@ int main() {
     // get borders and determine conflict
     if (get_borders_and_determine_conflict(spriteX, spriteY, 1, sprite5->attribute1 & 0x1ff) == 1
         ||  get_borders_and_determine_conflict(spriteX, spriteY, 2, s1prite->attribute1 & 0x1ff) == 1) {
-      *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
+      *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE;
       char score_str[100];
       char coin_str[100];
       sprintf(score_str, "you got %d points", scores->points);
       sprintf(coin_str, "you got %d coins", scores->coins);
-      setup_endscreen(score_str, coin_str);
+      setup_score_endscreen(score_str, coin_str);
+      set_text("hello world", HEIGHT/2, WIDTH/2); 
+      set_text(coin_str, HEIGHT/2 + 2, WIDTH/2); 
       game_ended = 1;
       game_in_progress = 0;
     }
