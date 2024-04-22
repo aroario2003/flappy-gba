@@ -556,7 +556,13 @@ void on_vblank() {
 }
 */
 
-
+void remove_sprite(Sprite *sprite){
+    //Attempts to shift to minimum priority
+    sprite->attribute2 = 3 << 10;
+    sprite ->attribute0 = 0;
+    sprite -> attribute1 = 0;
+    
+}
 /* the main function */
 int main() {
   *display_control = MODE3 | BG2;
@@ -660,7 +666,6 @@ int main() {
      int coinPositionx=HEIGHT;
   int spriteMode = 0;
   //play_sound(taptap, taptap_bytes, 16000, 'A');
-
   /* loop forever */
   while (1) {
     //Kill switch 
@@ -763,12 +768,17 @@ int main() {
     }
 
     // test coin borders
-    if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 1, coin->attribute1 & 0x1ff) == 1
-    || get_coin_borders_and_determine_conflict(spriteX, spriteY, 2, coin2->attribute1 & 0x1ff) == 1) {
+    if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 1, coin->attribute1 & 0x1ff) == 1) {
+    remove_sprite(coin);
+    //Call it on the coin it has passed.
 	bird->coin_collected = 1;
 	scores->coins = track_coins(bird->coin_collected, scores->coins);
     }
-
+    else if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 2, coin2->attribute1 & 0x1ff) == 1) {
+    remove_sprite(coin2);
+    bird->coin_collected = 1;
+    scores->coins = track_coins(bird->coin_collected, scores->coins);
+    }
     //Calls a function to update the bird's position on-screen 
     bird_update(bird);
     //Increment counter.
