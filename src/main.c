@@ -363,7 +363,7 @@ int pipe_collisions(Pipe* pipe, Bird* bird){
   int pipeLocationBottom = pipe->y-8;
 }
 
-void setup_endscreen() {
+void setup_endscreen(char* score_str, char* coin_str) {
   volatile unsigned short* dest = char_block(0);
 
   /* works somewhat */
@@ -632,7 +632,11 @@ int main() {
     }
     if (button_pressed(BUTTON_SELECT) && game_ended == 0) {
       *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
-      setup_endscreen();
+      char score_str[100];
+      char coin_str[100];
+      sprintf(score_str, "you got %d points", scores->points);
+      sprintf(coin_str, "you got %d coins", scores->coins);
+      setup_endscreen(score_str, coin_str);
       game_ended = 1;
       game_in_progress = 0;
     }
@@ -694,7 +698,11 @@ int main() {
     if (get_borders_and_determine_conflict(spriteX, spriteY, 1, sprite5->attribute1 & 0x1ff) == 1
         ||  get_borders_and_determine_conflict(spriteX, spriteY, 2, s1prite->attribute1 & 0x1ff) == 1) {
       *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
-      setup_endscreen();
+      char score_str[100];
+      char coin_str[100];
+      sprintf(score_str, "you got %d points", scores->points);
+      sprintf(coin_str, "you got %d coins", scores->coins);
+      setup_endscreen(score_str, coin_str);
       game_ended = 1;
       game_in_progress = 0;
     }
@@ -703,8 +711,6 @@ int main() {
     if ((sprite5->attribute1 & 0x1ff+14 == spriteX+12) || (s1prite->attribute1 & 0x1ff+14 == spriteX+12)) {
       bird->touched_portal = 0;
       scores->points = track_score(bird->touched_portal, scores->points);
-      char score_str[10];
-      sprintf(score_str, "%d", scores->points);
     } else {
         bird->touched_portal = 1;
         scores->points = track_score(bird->touched_portal, scores->points);
@@ -714,9 +720,8 @@ int main() {
     if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 1, coin->attribute1 & 0x1ff) == 1
     || get_coin_borders_and_determine_conflict(spriteX, spriteY, 2, coin2->attribute1 & 0x1ff) == 1) {
         *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
-        setup_endscreen();
-        game_ended = 1;
-        game_in_progress = 0;
+	bird->coin_collected = 1;
+	scores->coins = track_coins(bird->coin_collected, scores->coins);
     }
 
     //Calls a function to update the bird's position on-screen 
