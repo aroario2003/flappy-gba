@@ -296,6 +296,7 @@ void setup_background(int mode) {
     /* (18 << 8) | */
     /*   (1 << 13) | */
     /* (0 << 14); */
+
     /* dest = char_block(1); */
     /* image = (unsigned short*) background_dusk_data; */
     /* for (int i = 0; i < ((background_dusk_width * background_dusk_height) / 2); i++) { */
@@ -314,41 +315,6 @@ void setup_background(int mode) {
 //  for (int i = 0; i < 32 * 32; i++) {
 //      dest[i] = 1;
 //  }
-
-  /* load the image into char block 0 (16 bits at a time) */
-  volatile unsigned short* dest = char_block(0);
-  unsigned short* image = (unsigned short*) background_data;
-  for (int i = 0; i < ((background_width * background_height) / 2); i++) {
-    dest[i] = image[i];
-  }
-
-  /* set all control the bits in this register */
-  *bg0_control = 2 |    /* priority, 0 is highest, 3 is lowest */
-    (0 << 2)  |       /* the char block the image data is stored in */
-    (0 << 6)  |       /* the mosaic flag */
-    (1 << 7)  |       /* color mode, 0 is 16 colors, 1 is 256 colors */
-    (16 << 8) |       /* the screen block the tile data is stored in */
-    (1 << 13) |       /* wrapping flag */
-    (0 << 14);        /* bg size, 0 is 256x256 */
-
-  *bg1_control = 1 |
-    (0 << 2)  |
-    (0 << 6)  |
-    (1 << 7)  |
-    (17 << 8) |
-    (1 << 13) |
-    (0 << 14);
-
-  /* load the tile data into screen block 16 */
-  dest = screen_block(16);
-  for (int i = 0; i < (map_width * map_height); i++) {
-    dest[i] = map[i];
-  }
-  /* load the tile data into screen block 17 */
-  dest = screen_block(17);
-  for (int i = 0; i < (map_width * map_height); i++) {
-    dest[i] = map2[i];
-  }
 }
 
 void set_text(char* str, int row, int col) {
@@ -434,14 +400,6 @@ void setup_endscreen() {
     for (int i = 0; i < (end_game_width * end_game_height); i++) {
         dest[i] = end_game[i];
     }
-
-  *bg2_control = 0 |
-    (0 << 2)  |
-    (0 << 6)  |
-    (1 << 7)  |
-    (18 << 8) |
-    (1 << 13) |
-    (0 << 14);
 
 }
 
@@ -611,8 +569,6 @@ void remove_sprite(Sprite *sprite){
     sprite -> attribute1 = 0;
 
 }
-
-
 /* the main function */
 int main() {
     *display_control = MODE3 | BG2;
@@ -677,6 +633,7 @@ int main() {
     sprite7 = sprite_init(WIDTH, 50, SIZE_16_16, 0, 0, 64, 0);
     sprite8 = sprite_init(WIDTH, 60, SIZE_16_16, 0, 0, 64, 0);
     sprite9 = sprite_init(WIDTH, 70, SIZE_16_16, 0, 0, 64, 0);
+
     //PIPE 2
     Sprite* s1prite;
     Sprite* s2prite;
@@ -691,60 +648,6 @@ int main() {
     Sprite* bsprite;
     Sprite* csprite;
     Sprite* dsprite;
-
-  Sprite* coin2;
-     coin2 = sprite_init(0, 50, SIZE_16_16, 0, 0, 80, 0);
-     int coin2Positiony;
-     int coin2Positionx=HEIGHT;
-  Sprite* coin;
-     coin = sprite_init(WIDTH, 90, SIZE_16_16, 0, 0, 80, 0);
-     int coinPositiony=WIDTH;
-     int coinPositionx=HEIGHT;
-  int spriteMode = 0;
-  //play_sound(taptap, taptap_bytes, 16000, 'A');
-
-  /* loop forever */
-  while (1) {
-    //Kill switch 
-    if (counter%60 == 0){
-      if (spriteMode == 0){
-	sprite_set_offset(theSprite, 8);
-	spriteMode = 8;
-      }
-      else{
-	sprite_set_offset(theSprite, 0);
-	spriteMode = 0;
-      }
-    }
-    if (button_pressed(BUTTON_SELECT) && game_ended == 0) {
-      *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
-      char score_str[100];
-      char coin_str[100];
-      sprintf(score_str, "you got %d points", scores->points);
-      sprintf(coin_str, "you got %d coins", scores->coins);
-      setup_score_endscreen(score_str, coin_str);
-      game_ended = 1;
-      game_in_progress = 0;
-    }
-    //Start again if you die
-    if (button_pressed(BUTTON_START) && game_ended == 1) {
-      game_started = 1;
-      game_ended = 0;
-      counter = 0;
-      break;
-    }
-           
-    //TODO: Make bird move properly
-    if (button_pressed(BUTTON_A)&& counter%2 == 0){
-      if ((theSprite->attribute0 & 0xff) > 0) {
-	sprite_move(theSprite, 0, -1);
-	bird->y = bird->y - 1; 
-      }
-    }
-    else if ((theSprite->attribute0 & 0xff) < 148 && counter%2 == 0) {
-      sprite_move(theSprite, 0, 1);
-      bird->y = bird->y + 1;
-    }
 
     s1prite = sprite_init(0, HEIGHT-10, SIZE_16_16, 0, 0, 64, 0);
     s2prite = sprite_init(0, HEIGHT-20, SIZE_16_16, 0, 0, 64, 0);
@@ -800,7 +703,6 @@ int main() {
             break;
         }
 
-
         //TODO: Make bird move properly
         if (button_pressed(BUTTON_A)&& counter%2 == 0){
             if ((theSprite->attribute0 & 0xff) > 0) {
@@ -812,25 +714,6 @@ int main() {
             sprite_move(theSprite, 0, 1);
             bird->y = bird->y + 1;
         }
-
-    // convert theSprite x and y to local variables
-    int spriteX = theSprite->attribute1 & 0x1ff;
-    int spriteY = theSprite->attribute0 & 0xff;
-    // get borders and determine conflict
-    if (get_borders_and_determine_conflict(spriteX, spriteY, 1, sprite5->attribute1 & 0x1ff) == 1
-        ||  get_borders_and_determine_conflict(spriteX, spriteY, 2, s1prite->attribute1 & 0x1ff) == 1) {
-      *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE;
-      char score_str[100];
-      char coin_str[100];
-      sprintf(score_str, "you got %d points", scores->points);
-      sprintf(coin_str, "you got %d coins", scores->coins);
-      setup_score_endscreen(score_str, coin_str);
-      set_text(score_str, HEIGHT/2, WIDTH/2); 
-      set_text(coin_str, HEIGHT/2 + 2, WIDTH/2); 
-      game_ended = 1;
-      game_in_progress = 0;
-    }
-
 
         sprite_move(coin, -1, 0);
         sprite_move(coin2, -1, 0);
@@ -862,23 +745,6 @@ int main() {
         sprite_move(bsprite, -1, 0);
         sprite_move(csprite, -1, 0);
         sprite_move(dsprite, -1, 0);
-
-    // test coin borders
-    if (get_coin_borders_and_determine_conflict(spriteX, spriteY, 1, coin->attribute1 & 0x1ff) == 1
-    || get_coin_borders_and_determine_conflict(spriteX, spriteY, 2, coin2->attribute1 & 0x1ff) == 1) {
-	bird->coin_collected = 1;
-	scores->coins = track_coins(bird->coin_collected, scores->coins);
-    }
-
-    //Calls a function to update the bird's position on-screen 
-    bird_update(bird);
-    //Increment counter.
-    counter = counter + 1;
-    //Checks if the counter is divisable by 10. If it is, moves 
-    // the screen. I ued 10 to slow it down to look more natural.
-    if (counter % 10 == 0) {
-      xscroll++;
-    }
 
         // convert theSprite x and y to local variables
         int spriteX = theSprite->attribute1 & 0x1ff;
@@ -958,4 +824,3 @@ int main() {
         delay(50);
     }
 }
-
