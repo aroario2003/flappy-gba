@@ -1,6 +1,6 @@
 
 //#include "taptapextended.h"
-//#include "taptap.h"
+#include "taptap.h"
 //#include "player.h"
 #include "flappin.h"
 #include "background.h"
@@ -201,7 +201,7 @@ volatile unsigned char* fifo_buffer_b  = (volatile unsigned char*) 0x40000A4;
 unsigned int channel_a_vblanks_remaining = 0;
 unsigned int channel_a_total_vblanks = 0;
 unsigned int channel_b_vblanks_remaining = 0;
-
+#define INTERRUPT_VBLANK 0x1
 
 
 /* wait for the screen to be fully drawn so we can do something during vblank */
@@ -498,7 +498,7 @@ int get_coin_borders_and_determine_conflict(int x, int y, int coinNumber, int co
     }
 }
 
-/*
+
 void play_sound(const signed char* sound, int total_samples, int sample_rate, char channel) {
     *timer0_control = 0;
     if (channel == 'A') {
@@ -507,6 +507,7 @@ void play_sound(const signed char* sound, int total_samples, int sample_rate, ch
         *dma2_control = 0;
     }
 
+            
     if (channel == 'A') {
         *sound_control |= SOUND_A_RIGHT_CHANNEL | SOUND_A_LEFT_CHANNEL | SOUND_A_FIFO_RESET;
     } else if (channel == 'B') {
@@ -535,7 +536,6 @@ void play_sound(const signed char* sound, int total_samples, int sample_rate, ch
     } else if (channel == 'B') {
         channel_b_vblanks_remaining = total_samples * ticks_per_sample * (1.0 / CYCLES_PER_BLANK);
     }
-
     *timer0_control = TIMER_ENABLE | TIMER_FREQ_1;
 }
 
@@ -567,7 +567,7 @@ void on_vblank() {
     *interrupt_state = temp;
     *interrupt_enable = 1;
 }
-*/
+
 
 void remove_sprite(Sprite *sprite){
     //Attempts to shift to minimum priority
@@ -578,6 +578,10 @@ void remove_sprite(Sprite *sprite){
 }
 /* the main function */
 int main() {
+    *interrupt_callback = (unsigned int) &on_vblank;
+    *interrupt_selection |= INTERRUPT_VBLANK;
+    *display_interrupts |= 0x08;
+    *interrupt_enable = 1;
     *display_control = MODE3 | BG2;
     for (int row = 0; row < HEIGHT; row++) {
         for (int col = 0; col < WIDTH; col++) {
@@ -677,7 +681,7 @@ int main() {
     int coinPositiony=WIDTH;
     int coinPositionx=HEIGHT;
     int spriteMode = 0;
-    //play_sound(taptap, taptap_bytes, 16000, 'A');
+    play_sound(taptap, taptap_bytes, 16000, 'A');
     /* loop forever */
     while (1) {
         //Kill switch
@@ -704,10 +708,11 @@ int main() {
         }
         //Start again if you die
         if (button_pressed(BUTTON_START) && game_ended == 1) {
-            game_started = 1;
-            game_ended = 0;
-            counter = 0;
-            break;
+            
+            //game_started = 1;
+            //game_ended = 0;
+            //counter = 0;
+            //break;
         }
 
         //TODO: Make bird move properly
