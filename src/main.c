@@ -421,10 +421,12 @@ int get_borders_and_determine_conflict(int x, int y, int pipeNumber, int pipeX) 
 
 // return 1 if conflict, 0 if no conflict
 int get_coin_borders_and_determine_conflict(int x, int y, int coinNumber, int coinX) {
+    // adjust coinX by +2 as game rendering is different than real math
+    coinX +=2;
     if (coinNumber == 1) {
         // deathzone: pixel Y 78 to pixel Y 102 (where edge of bird touches coin)
         // conflict case
-        if (y >= 78 && y <= 102 && x >= coinX-14 && x <= coinX+14) {
+        if (y >= 78 && y <= 102 && x >= coinX-14 && x <= coinX+12) {
             return 1;
         }
         return 0;
@@ -432,7 +434,7 @@ int get_coin_borders_and_determine_conflict(int x, int y, int coinNumber, int co
     else if (coinNumber == 2) {
         // deathzone: pixel Y 38 to pixel Y 62 (where edge of bird touches coin)
         // conflict case
-        if (y >= 38 && y <= 62 && x >= coinX-14 && x <= coinX+14) {
+        if (y >= 38 && y <= 62 && x >= coinX-14 && x <= coinX+12) {
             return 1;
         }
         return 0;
