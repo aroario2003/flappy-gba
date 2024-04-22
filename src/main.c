@@ -693,12 +693,13 @@ int main() {
             }
         }
         if (button_pressed(BUTTON_SELECT) && game_ended == 0) {
-            *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE | BG2_ENABLE;
+            *display_control = MODE0 | BG0_ENABLE | BG1_ENABLE;
             char score_str[100];
             char coin_str[100];
             sprintf(score_str, "you got %d points", scores->points);
             sprintf(coin_str, "you got %d coins", scores->coins);
             setup_score_endscreen(score_str, coin_str);
+            set_text("hello world", HEIGHT/2, WIDTH/2);
             game_ended = 1;
             game_in_progress = 0;
         }
@@ -766,7 +767,7 @@ int main() {
             sprintf(coin_str, "you got %d coins", scores->coins);
             setup_score_endscreen(score_str, coin_str);
             set_text("hello world", HEIGHT/2, WIDTH/2);
-            set_text(coin_str, HEIGHT/2 + 2, WIDTH/2);
+            //set_text(coin_str, HEIGHT/2 + 2, WIDTH/2);
             game_ended = 1;
             game_in_progress = 0;
         }
